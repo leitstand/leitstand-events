@@ -1,0 +1,46 @@
+<ui-view-header>
+	<ui-title>Webhooks</ui-title>
+	<ui-subtitle>Listing of all existing webhooks</ui-subtitle>
+</ui-view-header>
+<ui-form rolesAllowed="Administrator">
+	<ui-filter name="filter">
+		<ui-label>Filter</ui-label>
+		<ui-note>Filter webhooks by their name</ui-note>
+	</ui-filter>
+	<!--  {{#hooks.length}} -->
+	<ui-group>
+		<ui-label>Webhooks</ui-label>
+		<table class="list">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>State</th>
+					<th>Topic</th>
+					<th class="text">Message Selector</th>
+					<th class="text">Description</th>
+				</tr>
+			</thead>	
+			<tbody>
+			<!-- {{#hooks}} -->
+				<tr>
+					<td><a href="webhook.html?hook={{hook_id}}" title="View hook settings">{{hook_name}}</a></td>
+					<td><span class="{{state}}">{{state}}</span></td>
+					<td>{{topic_name}}</td>
+					<td class="text">{{selector}}</td>
+					<td class="text">{{description}}</td>
+				</tr>	
+			<!--  {{/hooks}}-->
+			</tbody>
+		</table>
+	</ui-group>
+	<!--  {{/hooks.length}} -->
+	<!--  {{^hooks}} -->
+	<ui-blankslate>
+		<ui-title>No webhooks found</ui-title>
+		<ui-note>Please amend the filter expression or add a missing webhook.</ui-note>
+	</ui-blankslate>
+	<!--  {{/hooks}} -->
+	<ui-actions>
+		<ui-button href="new-webhook.html" primary rolesAllowed="Administrator">Add webhook</ui-button>
+	</ui-actions>
+</ui-form>

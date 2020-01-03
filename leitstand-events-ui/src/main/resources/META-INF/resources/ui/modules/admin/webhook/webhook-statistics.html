@@ -1,0 +1,76 @@
+<ui-view-header>
+<ui-breadcrumbs>
+	<ui-breadcrumb href="webhooks.html">Webhooks</ui-breadcrumb>
+	<ui-breadcrumb href="webhook.html?hook={{hook_id}}">{{hook_name}}</ui-breadcrumb>
+	<ui-breadcrumb>Webhook Statistics</ui-breadcrumb>
+</ui-breadcrumbs>
+<ui-title>Webhook Statistics</ui-title>
+<ui-subtitle>View the message processing statistics and try to process failed messages again.</ui-subtitle>
+</ui-view-header>
+<ui-form rolesAllowed="Administrator">
+<ui-group>
+<ui-label>Message Statistics</ui-label>
+<table class="list">
+	<thead>
+		<tr>
+			<th>Message State</th>
+			<th>Message Count</th>
+			<th>Min Exec Time</th>
+			<th>Avg Exec Time</th>
+			<th>Max Exec Time</th>
+			<th>Exec Time Stddev</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><span class="PROCESSED">PROCESSED</span></td>
+			<td>{{statistics.PROCESSED.message_count}}{{^statistics.PROCESSED.message_count}}0{{/statistics.PROCESSED.message_count}}</td>
+			<td>{{statistics.PROCESSED.min_exec_time}} ms</td>
+			<td>{{statistics.PROCESSED.avg_exec_time}} ms</td>
+			<td>{{statistics.PROCESSED.max_exec_time}} ms</td>
+			<td>{{statistics.PROCESSED.stddev_exec_time}} ms</td>			
+		</tr>
+		<tr>
+			<td><span class="FAILED">FAILED</span></td>
+			<td>{{statistics.FAILED.message_count}}{{^statistics.FAILED.message_count}}0{{/statistics.FAILED.message_count}}</td>
+			<!-- {{#statistics.FAILED.message_count}} -->
+			<td>{{statistics.FAILED.min_exec_time}} ms</td>
+			<td>{{statistics.FAILED.avg_exec_time}} ms</td>
+			<td>{{statistics.FAILED.max_exec_time}} ms</td>
+			<td>{{statistics.FAILED.stddev_exec_time}} ms</td>		
+			<!-- {{/statistics.FAILED.message_count}} -->
+			<!-- {{^statistics.FAILED.message_count}} -->
+			<td>-</td>
+			<td>-</td>
+			<td>-</td>
+			<td>-</td>	
+			<!-- {{/statistics.FAILED.message_count}} -->
+				
+		</tr>
+		<tr>
+			<td><span class="IN_PROGRESS">IN_PROGRESS</span></td>
+			<td>{{statistics.IN_PROGRESS.message_count}}{{^statistics.IN_PROGRESS.message_count}}0{{/statistics.IN_PROGRESS.message_count}}</td>
+			<td>-</td>
+			<td>-</td>
+			<td>-</td>
+			<td>-</td>
+		</tr>
+		<tr>
+			<td><span class="READY">READY</span></td>
+			<td>{{statistics.READY.message_count}}{{^statistics.IN_PROGRESS.message_count}}0{{/statistics.IN_PROGRESS.message_count}}</td>
+			<td>-</td>
+			<td>-</td>
+			<td>-</td>
+			<td>-</td>
+		</tr>
+	</tbody>
+
+</table>
+</ui-group>
+<ui-actions>
+	<ui-button name="reset" title="Reset failed messages">Reset failed messages</ui-button>
+</ui-actions>
+</ui-form>
+
+
+
