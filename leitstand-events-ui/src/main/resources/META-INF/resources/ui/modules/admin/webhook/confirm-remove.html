@@ -1,0 +1,9 @@
+<ui-confirm>
+	<ui-title>Confirm to remove webhook {{hook.hook_name}}</ui-title>
+	<ui-message>
+		Removing a webhook <strong>cannot be undone!</strong> 
+		The configured endpoint gets no longer notified about subscribed events once the webhook has been removed.
+	</ui-message>
+	<ui-approve name="remove-webhook">Confirm</ui-approve>
+	<ui-decline href="webhook.html?hook={{hook.hook_id}}">Decline</ui-decline>
+</ui-confirm>

@@ -1,0 +1,27 @@
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="webhooks.html">Webhooks</ui-breadcrumb>
+		<ui-breadcrumb href="webhook.html?hook={{hook_id}}">{{hook_name}}</ui-breadcrumb>
+		<ui-breadcrumb>{{hook_name}}</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Webhook Settings  <span class="{{state}}">{{state}}</span></ui-title>
+	<ui-subtitle>Manage the settings of the {{hook_name}} webhook</ui-subtitle>
+</ui-view-header>
+<ui-form rolesAllowed="Administrator">
+	<ui-group>
+		<ui-label>Template Settings</ui-label>
+		<ui-note>Configure a template to rewrite the domain event message.</ui-note>
+		<ui-input name="content_type">
+			<ui-label>Content Type</ui-label>
+			<ui-note>The content type of the rewritten message</ui-note>
+		</ui-input>
+		<ui-textarea name="template">
+			<ui-label>Template</ui-label>
+			<ui-note>A mustache template to rewrite the domain event.</ui-note>
+		</ui-textarea>
+	</ui-group>
+	<ui-actions>
+		<ui-button name="save-template" primary>Save template</ui-button>
+		<ui-button name="remove-template" danger>Remove template</ui-button>
+	</ui-actions>
+</ui-form>

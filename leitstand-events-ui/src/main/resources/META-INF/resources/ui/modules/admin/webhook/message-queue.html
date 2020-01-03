@@ -1,0 +1,54 @@
+<ui-view-header>
+<ui-breadcrumbs>
+	<ui-breadcrumb href="webhooks.html">Webhooks</ui-breadcrumb>
+	<ui-breadcrumb href="webhook.html?hook={{hook_id}}">{{hook_name}}</ui-breadcrumb>
+	<ui-breadcrumb>Message History</ui-breadcrumb>
+</ui-breadcrumbs>
+<ui-title>Message Queue</ui-title>
+<ui-subtitle>Review the {{hook_name}} webhook message queue</ui-subtitle>
+</ui-view-header>
+<ui-form>
+<ui-filter name="correlationId">
+	<ui-label>Filter</ui-label>
+	<ui-note>Filter messages by correlation ID</ui-note>
+</ui-filter>
+<ui-group>
+<ui-label>Messages</ui-label>
+<!-- {{#messages.length}} -->
+<table class="list">
+	<thead>
+		<tr>
+			<th>Date Modified</th>
+			<th class="text">Event Name</th>
+			<th>Correlation ID</th>
+			<th>State</th>
+			<th>Execution Time</th>
+		</tr>
+	</thead>
+	<tbody>
+		<!-- {{#messages}} -->
+		<tr>
+			<td><a title="View message details" href="message.html?hook={{hook_id}}&event={{event_id}}"><ui-date readonly>{{date_modified}}</ui-date></a></td>
+			<td class="text">{{event_name}}</td>
+			<td>{{#correlation_id}}<a href="message-queue.html?hook={{hook_id}}&correlationId={{correlation_id}}&state={{state}}">{{.}}</a>{{/correlation_id}}{{^correlation_id}}-{{/correlation_id}}</td>
+			<td><span class="{{message_state}}">{{message_state}}</span></td>
+			<td>{{#exec_time}}{{.}} ms{{/exec_time}}{{^exec_time}}-{{/exec_time}}</td>
+		</tr>
+		<!-- {{/messages}} -->
+	</tbody>
+</table>
+<ui-actions>
+	<ui-button when="more_messages" name="load">Load more messages</ui-button>
+</ui-actions>
+</ui-group>
+</ui-form>
+<!-- {{/messages.length}} -->
+<!-- {{^messages.length}} -->
+<ui-blankslate>
+	<ui-title>No messages found.</ui-title>
+	<ui-note>
+		{{#correlationId}}The webhook message queue contains no message that matches the specified correlation ID.{{/correlationId}}
+		{{^correlationId}}The webhook message queue is empty.{{/correlationId}}
+	</ui-note>
+</ui-blankslate>
+<!-- {{/messages.length}} -->

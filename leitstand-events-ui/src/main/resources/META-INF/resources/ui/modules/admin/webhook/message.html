@@ -1,0 +1,52 @@
+<ui-view-header>
+<ui-breadcrumbs>
+	<ui-breadcrumb href="webhooks.html">Webhooks</ui-breadcrumb>
+	<ui-breadcrumb href="webhook.html?hook={{hook_id}}">{{hook_name}}</ui-breadcrumb>
+	<ui-breadcrumb>Message History</ui-breadcrumb>
+</ui-breadcrumbs>
+<ui-title>Message History</ui-title>
+<ui-subtitle>Review the message history of all processed messages and optionally reset the webhook to a previous message.</ui-subtitle>
+</ui-view-header>
+<!-- {{#event}} -->
+<ui-details> 
+	<ui-property>
+		<ui-label>Event ID</ui-label>
+		<ui-value>{{event_id}}</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Topic</ui-label>
+		<ui-value>{{topic_name}}</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Event Name</ui-label>
+		<ui-value>{{event_name}}</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Event Payload</ui-label>
+		<ui-value><ui-code>{{json_payload}}</ui-code></ui-value>
+	</ui-property>
+	<!-- {{#rewritten_message}} -->	
+	<ui-property>
+		<ui-label class="top">Rewritten Message</ui-label>
+		<ui-value><ui-code>{{.}}</ui-code></ui-value>
+	</ui-property>
+	<!-- {{/rewritten_message}} -->	
+	<ui-property>
+		<ui-label>Date Created</ui-label>
+		<ui-value><ui-date readonly>{{date_created}}</ui-date></ui-value>
+	</ui-property>
+</ui-details>
+<ui-form rolesAllowed="Administrator">
+<ui-actions>
+	<ui-button danger name="reset" title="Reset webhook to this message in order to process the message and all subsequent messages again">Reset webhook</ui-button>
+	<ui-button name="retry" title="Reset message to process the message again">Reset message</ui-button>
+</ui-actions>
+</ui-form>
+<!-- {{/event}} -->
+<!-- {{^event}} -->
+<ui-blankslate>
+	<ui-title>No more messages available</ui-title>
+	<ui-note>The message history does not contain more messages</ui-note>
+</ui-blankslate>
+<!-- {{/event}} -->
+
