@@ -43,7 +43,6 @@ import io.leitstand.commons.db.ResultSetMapping;
 import io.leitstand.commons.db.StatementPreparator;
 import io.leitstand.commons.model.Query;
 import io.leitstand.commons.model.Repository;
-import io.leitstand.event.queue.model.Message;
 import io.leitstand.event.queue.model.Topic;
 import io.leitstand.event.queue.service.DomainEvent;
 import io.leitstand.event.queue.service.DomainEventName;

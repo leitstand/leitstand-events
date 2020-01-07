@@ -7,7 +7,6 @@ import static io.leitstand.commons.model.StringUtil.toUtf8Bytes;
 import static io.leitstand.event.webhook.service.WebhookSettings.HttpMethod.POST;
 import static io.leitstand.event.webhook.service.WebhookSettings.HttpMethod.PUT;
 import static java.lang.String.format;
-import static java.lang.System.currentTimeMillis;
 import static java.util.Base64.getEncoder;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
@@ -31,7 +30,6 @@ import javax.ws.rs.core.Response;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
 
 import io.leitstand.event.webhook.service.Endpoint;
 import io.leitstand.security.auth.UserId;

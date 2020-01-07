@@ -13,10 +13,7 @@ import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
 
-import io.leitstand.event.queue.model.Message;
-import io.leitstand.event.queue.model.Topic;
 import io.leitstand.event.queue.service.DomainEvent;
-import io.leitstand.event.queue.service.TopicName;
 
 public class MessageTest {
 

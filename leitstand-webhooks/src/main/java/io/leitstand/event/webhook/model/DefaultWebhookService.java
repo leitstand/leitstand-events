@@ -51,7 +51,6 @@ import io.leitstand.event.queue.model.TopicProvider;
 import io.leitstand.event.queue.service.DomainEventId;
 import io.leitstand.event.webhook.service.MessageFilter;
 import io.leitstand.event.webhook.service.MessageReference;
-import io.leitstand.event.webhook.service.MessageState;
 import io.leitstand.event.webhook.service.WebhookId;
 import io.leitstand.event.webhook.service.WebhookMessage;
 import io.leitstand.event.webhook.service.WebhookMessages;

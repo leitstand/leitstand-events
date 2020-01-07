@@ -9,8 +9,9 @@ import static io.leitstand.event.webhook.service.WebhookName.webhookName;
 import static io.leitstand.event.webhook.service.WebhookSettings.newWebhookSettings;
 import static io.leitstand.event.webhook.service.WebhookTemplate.newWebhookTemplate;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.reason;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
-import static org.junit.Assert.*;
+
 import javax.ws.rs.core.Response;
 
 import org.junit.Rule;
@@ -23,13 +24,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
-import io.leitstand.commons.rs.ReasonCode;
 import io.leitstand.event.webhook.service.WebhookId;
 import io.leitstand.event.webhook.service.WebhookName;
 import io.leitstand.event.webhook.service.WebhookService;
 import io.leitstand.event.webhook.service.WebhookSettings;
 import io.leitstand.event.webhook.service.WebhookTemplate;
-import io.leitstand.testing.ut.LeitstandCoreMatchers;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WebhookResourceTest {
