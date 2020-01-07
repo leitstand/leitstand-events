@@ -11,7 +11,7 @@ import io.leitstand.commons.db.DatabaseService;
 @Dependent
 public class EventQueueDatabaseServiceProducer {
 
-	@Resource(lookup="java:/jdbc/rbms")
+	@Resource(lookup="java:/jdbc/leitstand")
 	private DataSource ds;
 	
 	@Produces
