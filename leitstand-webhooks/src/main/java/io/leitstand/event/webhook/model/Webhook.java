@@ -78,7 +78,7 @@ public class Webhook extends AbstractEntity{
 	@Convert(converter=WebhookNameConverter.class)
 	private WebhookName name;
 
-	private String userid;
+	private String userName;
 	private String pass64;
 	private String akey64;
 	@Enumerated(STRING)
@@ -131,7 +131,7 @@ public class Webhook extends AbstractEntity{
 	}
 	
 	public String getUser() {
-		return userid;
+		return userName;
 	}
 	
 	public String getPassword64() {
@@ -143,7 +143,7 @@ public class Webhook extends AbstractEntity{
 	}
 	
 	public boolean isBasicAuthentication() {
-		return isNonEmptyString(userid);
+		return isNonEmptyString(userName);
 	}
 
 	public void setEndpoint(Endpoint endpoint) {
@@ -174,8 +174,8 @@ public class Webhook extends AbstractEntity{
 		this.pass64 = pass64;
 	}
 	
-	public void setUserId(String user) {
-		this.userid = user;
+	public void setUserName(String user) {
+		this.userName = user;
 	}
 	
 	public void setAccessKey64(String akey64) {

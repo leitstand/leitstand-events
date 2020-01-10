@@ -172,7 +172,7 @@ public class DefaultWebhookService implements WebhookService{
 		hook.setSelector(settings.getSelector());
 		hook.setEndpoint(settings.getEndpoint());
 		hook.setHttpMethod(settings.getMethod());
-		hook.setUserId(settings.getUserId());
+		hook.setUserName(settings.getUserId());
 		hook.setPassword64(encrypt64(settings.getPassword()));
 		hook.setAccessKey64(encrypt64(settings.getAccesskey()));
 		hook.setBatchSize(settings.getBatchSize());

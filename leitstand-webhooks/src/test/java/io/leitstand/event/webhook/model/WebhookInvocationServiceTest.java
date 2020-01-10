@@ -18,6 +18,7 @@ import static io.leitstand.event.webhook.service.Endpoint.endpoint;
 import static io.leitstand.event.webhook.service.WebhookId.randomWebhookId;
 import static io.leitstand.event.webhook.service.WebhookName.webhookName;
 import static io.leitstand.event.webhook.service.WebhookSettings.HttpMethod.POST;
+import static io.leitstand.security.auth.UserName.userName;
 import static java.lang.Boolean.TRUE;
 import static java.util.Arrays.asList;
 import static java.util.Base64.getEncoder;
@@ -48,7 +49,6 @@ import io.leitstand.event.queue.service.DomainEvent;
 import io.leitstand.event.queue.service.DomainEventName;
 import io.leitstand.event.queue.service.TopicName;
 import io.leitstand.event.webhook.service.Endpoint;
-import io.leitstand.security.auth.UserId;
 import io.leitstand.security.crypto.MasterSecret;
 
 public class WebhookInvocationServiceTest {
@@ -124,7 +124,7 @@ public class WebhookInvocationServiceTest {
 		assertEquals(event.getDomainEventName(),batches.get(0).getWebhookInvocations().get(0).getEventName());
 		assertEquals(webhook.getEndpoint(),batches.get(0).getWebhookInvocations().get(0).getEndpoint());
 		assertEquals(webhook.getHttpMethod(),batches.get(0).getMethod());
-		assertNull(batches.get(0).getUserId());
+		assertNull(batches.get(0).getUserName());
 		assertNull(batches.get(0).getPassword());
 		assertNull(batches.get(0).getAccesskey());
 		assertEquals(webhook.getWebhookId(),batches.get(0).getWebhookId());
@@ -148,7 +148,7 @@ public class WebhookInvocationServiceTest {
 		assertEquals(event.getDomainEventName(),batches.get(0).getWebhookInvocations().get(0).getEventName());
 		assertEquals(webhook.getEndpoint(),batches.get(0).getWebhookInvocations().get(0).getEndpoint());
 		assertEquals(webhook.getHttpMethod(),batches.get(0).getMethod());
-		assertEquals(UserId.valueOf("unittest"),batches.get(0).getUserId());
+		assertEquals(userName("unittest"),batches.get(0).getUserName());
 		assertTrue(batches.get(0).getPassword().compareTo("secret"));
 		assertNull(batches.get(0).getAccesskey());
 		assertEquals(webhook.getWebhookId(),batches.get(0).getWebhookId());
@@ -169,7 +169,7 @@ public class WebhookInvocationServiceTest {
 		assertEquals(event.getDomainEventName(),batches.get(0).getWebhookInvocations().get(0).getEventName());
 		assertEquals(webhook.getEndpoint(),batches.get(0).getWebhookInvocations().get(0).getEndpoint());
 		assertEquals(webhook.getHttpMethod(),batches.get(0).getMethod());
-		assertNull(batches.get(0).getUserId());
+		assertNull(batches.get(0).getUserName());
 		assertNull(batches.get(0).getPassword());
 		assertEquals("secret",batches.get(0).getAccesskey());
 		assertEquals(webhook.getWebhookId(),batches.get(0).getWebhookId());

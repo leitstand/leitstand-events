@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import io.leitstand.event.webhook.service.Endpoint;
-import io.leitstand.security.auth.UserId;
+import io.leitstand.security.auth.UserName;
 
 public class WebhookBatchProcessorTest {
 
@@ -60,7 +60,7 @@ public class WebhookBatchProcessorTest {
 	
 	@Test
 	public void set_basic_authentication_when_user_password_credentials_exist() {
-		when(batch.getUserId()).thenReturn(new UserId("unittest"));
+		when(batch.getUserName()).thenReturn(new UserName("unittest"));
 		when(batch.getPassword()).thenReturn(new Password("password"));
 		
 		processor.authenticate(call);

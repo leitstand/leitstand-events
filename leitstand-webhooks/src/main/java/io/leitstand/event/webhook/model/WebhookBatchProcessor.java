@@ -91,8 +91,8 @@ public class WebhookBatchProcessor implements Runnable {
 
 
 	void authenticate(Builder call) {
-		if(batch.getUserId() != null) {
-			call.header("Authorization", "Basic "+encodeBase64String(toUtf8Bytes(batch.getUserId()+":"+new String(batch.getPassword().getValue()))));
+		if(batch.getUserName() != null) {
+			call.header("Authorization", "Basic "+encodeBase64String(toUtf8Bytes(batch.getUserName()+":"+new String(batch.getPassword().getValue()))));
 			return;
 		} 
 		if (isNonEmptyString(batch.getAccesskey())) {

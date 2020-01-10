@@ -12,7 +12,7 @@ import javax.security.enterprise.credential.Password;
 import io.leitstand.event.webhook.service.WebhookId;
 import io.leitstand.event.webhook.service.WebhookName;
 import io.leitstand.event.webhook.service.WebhookSettings.HttpMethod;
-import io.leitstand.security.auth.UserId;
+import io.leitstand.security.auth.UserName;
 
 public class WebhookBatch {
 
@@ -43,8 +43,8 @@ public class WebhookBatch {
 			return this;
 		}
 		
-		public Builder withUserId(UserId userId) {
-			batch.userId = userId;
+		public Builder withUserName(UserName userName) {
+			batch.userName = userName;
 			return this;
 		}
 		
@@ -83,7 +83,7 @@ public class WebhookBatch {
 	private Long webhookPK;
 	private WebhookName webhookName;
 	private HttpMethod method;
-	private UserId userId;
+	private UserName userName;
 	private Password password;
 	private String accesskey;
 	private String contentType;
@@ -110,8 +110,8 @@ public class WebhookBatch {
 		return method;
 	}
 	
-	public UserId getUserId() {
-		return userId;
+	public UserName getUserName() {
+		return userName;
 	}
 	
 	public Password getPassword() {
