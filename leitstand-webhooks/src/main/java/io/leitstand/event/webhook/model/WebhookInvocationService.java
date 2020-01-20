@@ -1,5 +1,17 @@
 /*
- * (c) RtBrick, Inc - All rights reserved, 2015 - 2019
+ * Copyright 2020 RtBrick Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package io.leitstand.event.webhook.model;
 
@@ -12,11 +24,13 @@ import static io.leitstand.commons.model.ObjectUtil.optional;
 import static io.leitstand.commons.model.StringUtil.fromUtf8Bytes;
 import static io.leitstand.commons.model.StringUtil.isNonEmptyString;
 import static io.leitstand.event.queue.service.DomainEventId.domainEventId;
+import static io.leitstand.event.queue.service.DomainEventName.domainEventName;
 import static io.leitstand.event.webhook.model.Webhook.findAllEnabledWebhooks;
 import static io.leitstand.event.webhook.model.WebhookBatch.newWebhookBatch;
 import static io.leitstand.event.webhook.model.WebhookInvocation.newWebhookInvocation;
 import static io.leitstand.event.webhook.service.MessageState.FAILED;
 import static io.leitstand.event.webhook.service.MessageState.PROCESSED;
+import static io.leitstand.security.auth.UserName.userName;
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
 
@@ -33,7 +47,7 @@ import io.leitstand.commons.db.DatabaseService;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.model.Service;
 import io.leitstand.event.queue.service.DomainEventName;
-import io.leitstand.security.auth.UserId;
+import io.leitstand.security.auth.UserName;
 import io.leitstand.security.crypto.MasterSecret;
 
 @Service
@@ -72,11 +86,11 @@ public class WebhookInvocationService {
 	public List<WebhookBatch> findInvocations(){
 		List<WebhookBatch> batches = new LinkedList<>();
 		for(Webhook webhook : repository.execute(findAllEnabledWebhooks())) {
-			UserId userId = null;
+			UserName userName = null;
 			String password = null;
 			String accesskey = null;
 			if(webhook.isBasicAuthentication()) {
-				userId = UserId.valueOf(webhook.getUser());
+				userName = userName(webhook.getUser());
 				password = fromUtf8Bytes(secret.decrypt(decodeBase64String(webhook.getPassword64())));
 			} else if (isNonEmptyString(webhook.getAccessKey64())) {
 				accesskey = fromUtf8Bytes(secret.decrypt(decodeBase64String(webhook.getAccessKey64())));
@@ -114,7 +128,7 @@ public class WebhookInvocationService {
 																	return newWebhookInvocation()
 																		   .withEndpoint(rewriter.rewriteEndpoint(webhook, requestEntity))
 																		   .withDomainEventId(domainEventId(rs.getString(2)))
-																		   .withDomainEventName(DomainEventName.domainEventName(rs.getString(3)))
+																		   .withDomainEventName(domainEventName(rs.getString(3)))
 																		   .withMessagePK(rs.getLong(1))
 																		   .withContentType(webhook.getContentType())
 																		   .withMessage(rewriter.rewritePayload(webhook, requestEntity))
@@ -133,7 +147,7 @@ public class WebhookInvocationService {
 							.withWebhookId(webhook.getWebhookId())
 							.withWebhookName(webhook.getWebhookName())
 							.withHttpMethod(webhook.getHttpMethod())
-							.withUserId(userId)
+							.withUserName(userName)
 							.withPassword(optional(password, Password::new))
 							.withAccesskey(accesskey)
 							.withWebhookInvocations(invocations)

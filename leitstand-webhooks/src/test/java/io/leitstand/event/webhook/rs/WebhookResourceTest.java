@@ -1,5 +1,17 @@
 /*
- * (c) RtBrick, Inc - All rights reserved, 2015 - 2019
+ * Copyright 2020 RtBrick Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package io.leitstand.event.webhook.rs;
 
@@ -9,8 +21,9 @@ import static io.leitstand.event.webhook.service.WebhookName.webhookName;
 import static io.leitstand.event.webhook.service.WebhookSettings.newWebhookSettings;
 import static io.leitstand.event.webhook.service.WebhookTemplate.newWebhookTemplate;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.reason;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
-import static org.junit.Assert.*;
+
 import javax.ws.rs.core.Response;
 
 import org.junit.Rule;
@@ -23,13 +36,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
-import io.leitstand.commons.rs.ReasonCode;
 import io.leitstand.event.webhook.service.WebhookId;
 import io.leitstand.event.webhook.service.WebhookName;
 import io.leitstand.event.webhook.service.WebhookService;
 import io.leitstand.event.webhook.service.WebhookSettings;
 import io.leitstand.event.webhook.service.WebhookTemplate;
-import io.leitstand.testing.ut.LeitstandCoreMatchers;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WebhookResourceTest {

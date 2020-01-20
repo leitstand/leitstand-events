@@ -1,0 +1,21 @@
+plugins {
+    id 'java-library'
+    id 'eclipse-wtp'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId = 'leitstand-events-ui'
+            version = project.getVersion()
+            from components.java
+            artifact sourcesJar
+
+        }
+    }
+}

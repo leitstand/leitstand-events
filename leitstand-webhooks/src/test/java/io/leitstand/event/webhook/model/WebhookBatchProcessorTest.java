@@ -1,5 +1,17 @@
 /*
- * (c) RtBrick, Inc - All rights reserved, 2015 - 2019
+ * Copyright 2020 RtBrick Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package io.leitstand.event.webhook.model;
 
@@ -7,7 +19,6 @@ import static io.leitstand.commons.model.StringUtil.toUtf8Bytes;
 import static io.leitstand.event.webhook.service.WebhookSettings.HttpMethod.POST;
 import static io.leitstand.event.webhook.service.WebhookSettings.HttpMethod.PUT;
 import static java.lang.String.format;
-import static java.lang.System.currentTimeMillis;
 import static java.util.Base64.getEncoder;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
@@ -31,10 +42,9 @@ import javax.ws.rs.core.Response;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
 
 import io.leitstand.event.webhook.service.Endpoint;
-import io.leitstand.security.auth.UserId;
+import io.leitstand.security.auth.UserName;
 
 public class WebhookBatchProcessorTest {
 
@@ -62,7 +72,7 @@ public class WebhookBatchProcessorTest {
 	
 	@Test
 	public void set_basic_authentication_when_user_password_credentials_exist() {
-		when(batch.getUserId()).thenReturn(new UserId("unittest"));
+		when(batch.getUserName()).thenReturn(new UserName("unittest"));
 		when(batch.getPassword()).thenReturn(new Password("password"));
 		
 		processor.authenticate(call);

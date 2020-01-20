@@ -1,5 +1,17 @@
 /*
- * (c) RtBrick, Inc - All rights reserved, 2015 - 2019
+ * Copyright 2020 RtBrick Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package io.leitstand.event.webhook.model;
 
@@ -18,6 +30,7 @@ import static io.leitstand.event.webhook.service.Endpoint.endpoint;
 import static io.leitstand.event.webhook.service.WebhookId.randomWebhookId;
 import static io.leitstand.event.webhook.service.WebhookName.webhookName;
 import static io.leitstand.event.webhook.service.WebhookSettings.HttpMethod.POST;
+import static io.leitstand.security.auth.UserName.userName;
 import static java.lang.Boolean.TRUE;
 import static java.util.Arrays.asList;
 import static java.util.Base64.getEncoder;
@@ -43,13 +56,11 @@ import io.leitstand.commons.db.ResultSetMapping;
 import io.leitstand.commons.db.StatementPreparator;
 import io.leitstand.commons.model.Query;
 import io.leitstand.commons.model.Repository;
-import io.leitstand.event.queue.model.Message;
 import io.leitstand.event.queue.model.Topic;
 import io.leitstand.event.queue.service.DomainEvent;
 import io.leitstand.event.queue.service.DomainEventName;
 import io.leitstand.event.queue.service.TopicName;
 import io.leitstand.event.webhook.service.Endpoint;
-import io.leitstand.security.auth.UserId;
 import io.leitstand.security.crypto.MasterSecret;
 
 public class WebhookInvocationServiceTest {
@@ -125,7 +136,7 @@ public class WebhookInvocationServiceTest {
 		assertEquals(event.getDomainEventName(),batches.get(0).getWebhookInvocations().get(0).getEventName());
 		assertEquals(webhook.getEndpoint(),batches.get(0).getWebhookInvocations().get(0).getEndpoint());
 		assertEquals(webhook.getHttpMethod(),batches.get(0).getMethod());
-		assertNull(batches.get(0).getUserId());
+		assertNull(batches.get(0).getUserName());
 		assertNull(batches.get(0).getPassword());
 		assertNull(batches.get(0).getAccesskey());
 		assertEquals(webhook.getWebhookId(),batches.get(0).getWebhookId());
@@ -149,7 +160,7 @@ public class WebhookInvocationServiceTest {
 		assertEquals(event.getDomainEventName(),batches.get(0).getWebhookInvocations().get(0).getEventName());
 		assertEquals(webhook.getEndpoint(),batches.get(0).getWebhookInvocations().get(0).getEndpoint());
 		assertEquals(webhook.getHttpMethod(),batches.get(0).getMethod());
-		assertEquals(UserId.valueOf("unittest"),batches.get(0).getUserId());
+		assertEquals(userName("unittest"),batches.get(0).getUserName());
 		assertTrue(batches.get(0).getPassword().compareTo("secret"));
 		assertNull(batches.get(0).getAccesskey());
 		assertEquals(webhook.getWebhookId(),batches.get(0).getWebhookId());
@@ -170,7 +181,7 @@ public class WebhookInvocationServiceTest {
 		assertEquals(event.getDomainEventName(),batches.get(0).getWebhookInvocations().get(0).getEventName());
 		assertEquals(webhook.getEndpoint(),batches.get(0).getWebhookInvocations().get(0).getEndpoint());
 		assertEquals(webhook.getHttpMethod(),batches.get(0).getMethod());
-		assertNull(batches.get(0).getUserId());
+		assertNull(batches.get(0).getUserName());
 		assertNull(batches.get(0).getPassword());
 		assertEquals("secret",batches.get(0).getAccesskey());
 		assertEquals(webhook.getWebhookId(),batches.get(0).getWebhookId());

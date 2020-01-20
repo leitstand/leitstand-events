@@ -1,5 +1,17 @@
 /*
- * (c) RtBrick, Inc - All rights reserved, 2015 - 2019
+ * Copyright 2020 RtBrick Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package io.leitstand.event.webhook.model;
 
@@ -12,7 +24,7 @@ import javax.security.enterprise.credential.Password;
 import io.leitstand.event.webhook.service.WebhookId;
 import io.leitstand.event.webhook.service.WebhookName;
 import io.leitstand.event.webhook.service.WebhookSettings.HttpMethod;
-import io.leitstand.security.auth.UserId;
+import io.leitstand.security.auth.UserName;
 
 public class WebhookBatch {
 
@@ -43,8 +55,8 @@ public class WebhookBatch {
 			return this;
 		}
 		
-		public Builder withUserId(UserId userId) {
-			batch.userId = userId;
+		public Builder withUserName(UserName userName) {
+			batch.userName = userName;
 			return this;
 		}
 		
@@ -83,7 +95,7 @@ public class WebhookBatch {
 	private Long webhookPK;
 	private WebhookName webhookName;
 	private HttpMethod method;
-	private UserId userId;
+	private UserName userName;
 	private Password password;
 	private String accesskey;
 	private String contentType;
@@ -110,8 +122,8 @@ public class WebhookBatch {
 		return method;
 	}
 	
-	public UserId getUserId() {
-		return userId;
+	public UserName getUserName() {
+		return userName;
 	}
 	
 	public Password getPassword() {
