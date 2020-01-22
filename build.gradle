@@ -75,6 +75,12 @@ sonarqube {
     }
 }
 
+project(':leitstand-events-ui') {
+    sonarqube {
+        skipProject = true
+    }
+}
+
 subprojects {
     sonarqube {
         properties {
