@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * Copyright 2020 RtBrick Inc.
  * 
@@ -13,6 +14,8 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+=======
+>>>>>>> Assigned access token scopes to resources
 package io.leitstand.event.webhook.rs;
 
 public final class Scopes {
