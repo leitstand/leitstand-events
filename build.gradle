@@ -23,7 +23,6 @@ allprojects {
         println 'Project version: ' + version
         project.setVersion(version)
     }
-
     group = 'io.leitstand.events'
     // Activate jacoco for all modules to measure unit test code coverage
     apply plugin: 'jacoco'
