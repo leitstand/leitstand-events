@@ -44,7 +44,7 @@ let webhooksController = function() {
 					'state':function(){
 								return this.enabled ? 'UP' : 'DOWN';
 					 },
-					 'filter':this.location().param('filter')};
+					 'filter':this.location.param('filter')};
 		},
 		buttons:{
 			'filter':function(){
@@ -139,22 +139,22 @@ let webhookController = function(){
 				if (authmode != 'bearer'){
 					delete settings.accesskey;
 				}
-				hook.saveSettings(this.location().params(),
+				hook.saveSettings(this.location.params,
 								  settings);
 					
 			},
 			'remove-webhook':function(){
-				hook.removeHook(this.location().params());
+				hook.removeHook(this.location.params);
 			},
 			'disable-webhook':function(){
-				hook.disableHook(this.location().params());
+				hook.disableHook(this.location.params);
 			},
 			'enable-webhook':function(){
-				hook.enableHook(this.location().params());
+				hook.enableHook(this.location.params);
 			},
 			'confirm-remove':function(){
 				this.navigate({'view':'confirm-remove.html',
-							   '?':this.location().params()});
+							   '?':this.location.params});
 			}
 		},
 		onSuccess:function(){
@@ -171,7 +171,7 @@ let webhookTemplateController = function(){
 				'save-template':function(){
 					let settings = this.updateViewModel({'content_type':this.input('content_type').value(),
 													 	 'template':this.input('template').value()})
-					hook.saveSettings(this.location().params(),
+					hook.saveSettings(this.location.params,
 									  settings);
 					
 				},
@@ -180,7 +180,7 @@ let webhookTemplateController = function(){
 					this.input('template').value('');
 					this.updateViewModel({'content_type':'application/json',
 										  'template':null});
-					hook.saveSettings(this.location().params(),
+					hook.saveSettings(this.location.params,
 							  settings);
 				},
 			},
@@ -194,12 +194,12 @@ let webhookMessageQueueController = function(){
 	let webhook = new Webhook({"scope":"messages"});
 	return new Controller({ resource : webhook,
 							viewModel: function(messages){
-								messages.correlationId = this.location().param("correlationId");
+								messages.correlationId = this.location.param("correlationId");
 								return messages;
 							},
 							buttons: {
 								"filter" : function(){
-									let params = this.location().params();
+									let params = this.location.params;
 									let correlationId = this.getViewModel("correlationId");
 									if(correlationId){
 										params.correlationId = correlationId;
@@ -218,7 +218,7 @@ let webhookStatisticsController = function(){
 	return new Controller({resource:webhook,
 						   buttons:{
 							   "reset":function(){
-								   webhook.retryFailed(this.location().params());
+								   webhook.retryFailed(this.location.params);
 							   }
 						   },
 						   onSuccess:function(){
@@ -246,21 +246,21 @@ let webhookMessageController = function(){
 						 'retry': function(){
 							  let hook = new Webhook();
 							  this.attach(hook);
-							  hook.resetHook({'hook':this.location().param('hook'),
+							  hook.resetHook({'hook':this.location.param('hook'),
 							  			      'event':this.getViewModel('event').event_id});
 						  },
 						  'reset': function(){
 							  let hook = new Webhook();
 							  this.attach(hook);
-							  hook.resetHook({'hook':this.location().param('hook'),
+							  hook.resetHook({'hook':this.location.param('hook'),
 							  			      'event':this.getViewModel('event').event_id});
 						  }
 					  },
 					  onNotFound:function(settings){
-						  this.render({});
+						  this.renderView({});
 					  },
 					  onSuccess:function(settings){
-						  let hook   = this.location().param('hook');
+						  let hook   = this.location.param('hook');
 						  this.navigate({'view':'message-queue.html',
 							  			 '?':{'hook':hook}});
 					  }});
