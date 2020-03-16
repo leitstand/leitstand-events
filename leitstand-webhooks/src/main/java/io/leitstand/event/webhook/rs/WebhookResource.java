@@ -20,14 +20,14 @@ import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.commons.rs.Responses.created;
 import static io.leitstand.commons.rs.Responses.success;
+import static io.leitstand.event.webhook.rs.Scopes.ADM;
+import static io.leitstand.event.webhook.rs.Scopes.ADM_READ;
+import static io.leitstand.event.webhook.rs.Scopes.ADM_WEBHOOKS;
+import static io.leitstand.event.webhook.rs.Scopes.ADM_WEBHOOKS_READ;
 import static io.leitstand.event.webhook.service.MessageFilter.newMessageFilter;
 import static io.leitstand.event.webhook.service.MessageState.messageState;
-import static io.leitstand.security.auth.Role.ADMINISTRATOR;
-import static io.leitstand.security.auth.Role.SYSTEM;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -43,6 +43,7 @@ import javax.ws.rs.core.Response;
 
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.event.queue.service.DomainEventId;
 import io.leitstand.event.webhook.service.MessageFilter;
 import io.leitstand.event.webhook.service.WebhookId;
@@ -53,9 +54,11 @@ import io.leitstand.event.webhook.service.WebhookService;
 import io.leitstand.event.webhook.service.WebhookSettings;
 import io.leitstand.event.webhook.service.WebhookStatistics;
 import io.leitstand.event.webhook.service.WebhookTemplate;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
 @Path("/webhooks")
+@Scopes({ADM, ADM_WEBHOOKS})
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
 public class WebhookResource {
@@ -68,21 +71,20 @@ public class WebhookResource {
 	
 	@GET
 	@Path("/{hook_id:"+UUID_PATTERN+"}")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
+	@Scopes({ADM,ADM_READ, ADM_WEBHOOKS_READ, ADM_WEBHOOKS})
 	public WebhookSettings getWebhookSettings(@PathParam("hook_id") WebhookId hookId) {
 		return service.getWebhook(hookId);
 	}
 	
 	@GET
 	@Path("/{hook_name}")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
+	@Scopes({ADM,ADM_READ, ADM_WEBHOOKS_READ, ADM_WEBHOOKS})
 	public WebhookSettings getWebhookSettings(@Valid @PathParam("hook_name") WebhookName hookName) {
 		return service.getWebhook(hookName);
 	}
 	
 	@PUT
 	@Path("/{hook_id:"+UUID_PATTERN+"}")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
 	public Response storeWebhookSettings(@Valid @PathParam("hook_id") WebhookId hookId,
 										 @Valid WebhookSettings settings) {
 		if(isDifferent(hookId, settings.getWebhookId())) {
@@ -99,7 +101,6 @@ public class WebhookResource {
 	}
 	
 	@POST
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
 	public Response storeWebhookSettings(@Valid WebhookSettings settings) {
 		
 		if(service.storeWebhook(settings)) {
@@ -110,7 +111,7 @@ public class WebhookResource {
 	
 	@GET
 	@Path("/{hook_name}/messages/{event:"+UUID_PATTERN+"}")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
+	@Scopes({ADM,ADM_READ, ADM_WEBHOOKS_READ, ADM_WEBHOOKS})
 	public WebhookMessage getMessage(@Valid @PathParam("hook_name") WebhookName hookName, 
 									 @Valid @PathParam("event") DomainEventId eventId) {
 		return service.getMessage(hookName, eventId);
@@ -118,7 +119,7 @@ public class WebhookResource {
 	
 	@GET
 	@Path("/{hook_id:"+UUID_PATTERN+"}/messages/{event:"+UUID_PATTERN+"}")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
+	@Scopes({ADM,ADM_READ, ADM_WEBHOOKS_READ, ADM_WEBHOOKS})
 	public WebhookMessage getMessage(@Valid @PathParam("hook_id") WebhookId hookId, 
 									 @Valid @PathParam("event") DomainEventId eventId) {
 		return service.getMessage(hookId,
@@ -127,7 +128,7 @@ public class WebhookResource {
 	
 	@GET
 	@Path("/{hook_name}/messages")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
+	@Scopes({ADM,ADM_READ, ADM_WEBHOOKS_READ, ADM_WEBHOOKS})
 	public WebhookMessages findMessages(@Valid @PathParam("hook_name") WebhookName hookName,
 										@QueryParam("state") String state,
 										@QueryParam("correlationId") String correlationId,
@@ -146,7 +147,7 @@ public class WebhookResource {
 	
 	@GET
 	@Path("/{hook_id:"+UUID_PATTERN+"}/messages")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
+	@Scopes({ADM,ADM_READ, ADM_WEBHOOKS_READ, ADM_WEBHOOKS})
 	public WebhookMessages findMessages(@Valid @PathParam("hook_id") WebhookId hookId,
 										@QueryParam("correlationId") String correlationId,
 										@QueryParam("state") String state,
@@ -165,7 +166,6 @@ public class WebhookResource {
 	
 	@POST
 	@Path("/{hook_name}/messages/{event:"+UUID_PATTERN+"}/_retry")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
 	public Response retryMessage(@Valid @PathParam("hook_name") WebhookName hookName, 
 								 @Valid @PathParam("event") DomainEventId eventId) {
 		service.getMessage(hookName, eventId);
@@ -174,7 +174,6 @@ public class WebhookResource {
 	
 	@POST
 	@Path("/{hook_id:"+UUID_PATTERN+"}/messages/{event:"+UUID_PATTERN+"}/_retry")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
 	public Response retryMessage(@Valid @PathParam("hook_id") WebhookId hookId, 
 								 @Valid @PathParam("event") DomainEventId eventId) {
 		service.getMessage(hookId, eventId);
@@ -183,7 +182,6 @@ public class WebhookResource {
 	
 	@POST
 	@Path("/{hook_name}/_reset")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
 	public Response resetWebhook(@Valid @PathParam("hook_name") WebhookName hookName, 
 								 @Valid @QueryParam("event_id") DomainEventId eventId) {
 		service.resetWebhook(hookName,
@@ -193,7 +191,6 @@ public class WebhookResource {
 	
 	@POST
 	@Path("/{hook_id:"+UUID_PATTERN+"}/_reset")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
 	public Response resetWebhook(@Valid @PathParam("hook_id") WebhookId hookId, 
 		    					 @Valid @QueryParam("event_id") DomainEventId eventId) {
 		service.resetWebhook(hookId,
@@ -203,7 +200,6 @@ public class WebhookResource {
 	
 	@POST
 	@Path("/{hook_name}/_retry")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
 	public Response retryFailedCalls(@Valid @PathParam("hook_name") WebhookName hookName) {
 		service.retryWebhook(hookName);
 		return success(messages);
@@ -211,7 +207,6 @@ public class WebhookResource {
 	
 	@POST
 	@Path("/{hook_id:"+UUID_PATTERN+"}/_retry")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
 	public Response retryFailedCalls(@Valid @PathParam("hook_id") WebhookId hookId) {
 		service.retryWebhook(hookId);
 		return success(messages);
@@ -220,7 +215,6 @@ public class WebhookResource {
 	
 	@POST
 	@Path("/{hook_name}/_disable")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
 	public Response disableWebhook(@Valid @PathParam("hook_name") WebhookName hookName) {
 		service.disableWebhook(hookName);
 		return success(messages);
@@ -228,7 +222,6 @@ public class WebhookResource {
 	
 	@POST
 	@Path("/{hook_id:"+UUID_PATTERN+"}/_disable")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
 	public Response disableWebhook(@Valid @PathParam("hook_id") WebhookId hookId) {
 		service.disableWebhook(hookId);
 		return success(messages);
@@ -236,7 +229,6 @@ public class WebhookResource {
 	
 	@POST
 	@Path("/{hook_name}/_enable")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
 	public Response enableWebhook(@Valid @PathParam("hook_name") WebhookName hookName) {
 		service.enableWebhook(hookName);
 		return success(messages);
@@ -244,7 +236,6 @@ public class WebhookResource {
 	
 	@POST
 	@Path("/{hook_id:"+UUID_PATTERN+"}/_enable")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
 	public Response enableWebhook(@Valid @PathParam("hook_id") WebhookId hookId) {
 		service.enableWebhook(hookId);
 		return success(messages);
@@ -252,7 +243,6 @@ public class WebhookResource {
 	
 	@DELETE
 	@Path("/{hook_id:"+UUID_PATTERN+"}")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
 	public Response removeWebhook(@Valid @PathParam("hook_id") WebhookId hookId) {
 		service.removeWebhook(hookId);
 		return success(messages);
@@ -260,7 +250,6 @@ public class WebhookResource {
 	
 	@DELETE
 	@Path("/{hook_name}")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
 	public Response removeWebhook(@Valid @PathParam("hook_name") WebhookName hookName) {
 		service.removeWebhook(hookName);
 		return success(messages);
@@ -269,7 +258,6 @@ public class WebhookResource {
 	
 	@PUT
 	@Path("/{hook_id:"+UUID_PATTERN+"}/template")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
 	public Response storeWebhookTemplate(@Valid @PathParam("hook_id") WebhookId hookId,
 										 @Valid WebhookTemplate settings) {
 		if(isDifferent(hookId, settings.getWebhookId())) {
@@ -285,7 +273,6 @@ public class WebhookResource {
 	
 	@PUT
 	@Path("/{hook_name}/template")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
 	public Response storeWebhookTemplate(@Valid @PathParam("hook_name") WebhookName hookName,
 										 @Valid WebhookTemplate settings) {
 		
@@ -303,28 +290,28 @@ public class WebhookResource {
 	
 	@GET
 	@Path("/{hook_id:"+UUID_PATTERN+"}/template")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
+	@Scopes({ADM,ADM_READ, ADM_WEBHOOKS_READ, ADM_WEBHOOKS})
 	public WebhookTemplate getWebhookTemplate(@PathParam("hook_id") WebhookId hookId) {
 		return service.getWebhookTemplate(hookId);
 	}
 	
 	@GET
 	@Path("/{hook_name}/template")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
+	@Scopes({ADM,ADM_READ, ADM_WEBHOOKS_READ, ADM_WEBHOOKS})
 	public WebhookTemplate getWebhookTemplate(@Valid @PathParam("hook_name") WebhookName hookName) {
 		return service.getWebhookTemplate(hookName);
 	}
 	
 	@GET
 	@Path("/{hook_id:"+UUID_PATTERN+"}/statistics")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
+	@Scopes({ADM,ADM_READ, ADM_WEBHOOKS_READ, ADM_WEBHOOKS})
 	public WebhookStatistics getWebhookStatistics(@PathParam("hook_id") WebhookId hookId) {
 		return service.getWebhookStatistics(hookId);
 	}
 	
 	@GET
 	@Path("/{hook_name}/statistics")
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
+	@Scopes({ADM,ADM_READ, ADM_WEBHOOKS_READ, ADM_WEBHOOKS})
 	public WebhookStatistics getWebhookStatistics(@Valid @PathParam("hook_name") WebhookName hookName) {
 		return service.getWebhookStatistics(hookName);
 	}

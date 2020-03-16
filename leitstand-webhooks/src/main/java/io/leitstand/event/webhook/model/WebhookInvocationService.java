@@ -46,7 +46,6 @@ import javax.ws.rs.core.Response.StatusType;
 import io.leitstand.commons.db.DatabaseService;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.model.Service;
-import io.leitstand.event.queue.service.DomainEventName;
 import io.leitstand.security.auth.UserName;
 import io.leitstand.security.crypto.MasterSecret;
 

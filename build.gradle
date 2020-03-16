@@ -23,7 +23,6 @@ allprojects {
         println 'Project version: ' + version
         project.setVersion(version)
     }
-
     group = 'io.leitstand.events'
     // Activate jacoco for all modules to measure unit test code coverage
     apply plugin: 'jacoco'
@@ -72,6 +71,12 @@ task jacocoMerge(type: JacocoMerge){
 sonarqube {
     properties {
         property 'sonar.sourceEncoding', 'UTF-8'
+    }
+}
+
+project(':leitstand-events-ui') {
+    sonarqube {
+        skipProject = true
     }
 }
 

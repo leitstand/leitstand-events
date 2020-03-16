@@ -22,7 +22,7 @@
 	<ui-title>Webhook Settings  <span class="{{state}}">{{state}}</span></ui-title>
 	<ui-subtitle>Manage the settings of the {{hook_name}} webhook</ui-subtitle>
 </ui-view-header>
-<ui-form rolesAllowed="Administrator">
+<ui-form scopesAllowed="adm adm.webhooks">
 	<ui-group>
 		<ui-label>Template Settings</ui-label>
 		<ui-note>Configure a template to rewrite the domain event message.</ui-note>

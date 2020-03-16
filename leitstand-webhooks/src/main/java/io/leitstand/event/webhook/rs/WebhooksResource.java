@@ -16,16 +16,16 @@
 package io.leitstand.event.webhook.rs;
 
 
-import static io.leitstand.security.auth.Role.ADMINISTRATOR;
-import static io.leitstand.security.auth.Role.SYSTEM;
+import static io.leitstand.event.webhook.rs.Scopes.ADM;
+import static io.leitstand.event.webhook.rs.Scopes.ADM_READ;
+import static io.leitstand.event.webhook.rs.Scopes.ADM_WEBHOOKS;
+import static io.leitstand.event.webhook.rs.Scopes.ADM_WEBHOOKS_READ;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.created;
 
 import java.net.URI;
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -38,12 +38,15 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.event.webhook.service.WebhookReference;
 import io.leitstand.event.webhook.service.WebhookService;
 import io.leitstand.event.webhook.service.WebhookSettings;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
 @Path("/webhooks")
+@Scopes({ADM, ADM_WEBHOOKS})
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
 public class WebhooksResource {
@@ -55,7 +58,7 @@ public class WebhooksResource {
 	private Messages messages;
 	
 	@GET
-	@RolesAllowed({ADMINISTRATOR,SYSTEM})
+	@Scopes({ADM,ADM_READ, ADM_WEBHOOKS_READ, ADM_WEBHOOKS})
 	public List<WebhookReference> findWebhooks(@QueryParam("filter") @DefaultValue(".*") String filter){
 		return service.findWebhooks(filter);
 	}

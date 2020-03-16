@@ -15,38 +15,11 @@
  */
 package io.leitstand.event.webhook.rs;
 
+public final class Scopes {
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-
-import java.util.logging.Logger;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-
-import io.leitstand.commons.rs.Resource;
-
-
-@Resource
-@Path("webhooks")
-@Consumes(APPLICATION_JSON)
-@Produces(APPLICATION_JSON)
-public class LoggingWebhook {
-	
-	private static final Logger LOG = Logger.getLogger(LoggingWebhook.class.getName());
-
-	@POST
-	@Path("samples/post")
-	public void post(String json) {
-		LOG.info(json);
-	}
-
-	@PUT
-	@Path("samples/put")
-	public void put(String json) {
-		LOG.info(json);
-	}
+	public static final String ADM = "adm";
+	public static final String ADM_READ = "adm.read";
+	public static final String ADM_WEBHOOKS_READ = "adm.webhook.read";
+	public static final String ADM_WEBHOOKS = "adm.webhook";
 	
 }

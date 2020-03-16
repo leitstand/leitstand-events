@@ -51,7 +51,7 @@
 		<ui-value><ui-date readonly>{{date_created}}</ui-date></ui-value>
 	</ui-property>
 </ui-details>
-<ui-form rolesAllowed="Administrator">
+<ui-form scopesAllowed="adm adm.webhook">
 <ui-actions>
 	<ui-button danger name="reset" title="Reset webhook to this message in order to process the message and all subsequent messages again">Reset webhook</ui-button>
 	<ui-button name="retry" title="Reset message to process the message again">Reset message</ui-button>
