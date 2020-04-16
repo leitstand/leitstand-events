@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> Added copyright
 /*
  * Copyright 2020 RtBrick Inc.
  * 
@@ -17,11 +13,6 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-<<<<<<< HEAD
-=======
->>>>>>> Assigned access token scopes to resources
-=======
->>>>>>> Added copyright
 package io.leitstand.event.webhook.rs;
 
 public final class Scopes {
