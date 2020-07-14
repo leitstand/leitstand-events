@@ -83,7 +83,7 @@ const webhooksController = function() {
 };
 
 const newWebhookController = function(){
-	const hooks = new Webhooks();
+	const hooks = new Webhooks({scope:'settings'});
 	return new Controller({
 		resource:hooks,
 		viewModel:function(){
@@ -118,7 +118,7 @@ const newWebhookController = function(){
 }	
 
 const webhookController = function(){
-	const hook = new Webhook();
+	const hook = new Webhook({scope:'settings'});
 	return new Controller({
 		resource:hook,
 		viewModel:function(settings){
@@ -185,7 +185,7 @@ const webhookController = function(){
 }
 	
 const webhookTemplateController = function(){
-	const hook = new Webhook({'scope':'template'});
+	const hook = new Webhook({scope:'template'});
 		return new Controller({
 			resource:hook,
 			buttons:{
@@ -212,7 +212,7 @@ const webhookTemplateController = function(){
 }
 
 const webhookMessageQueueController = function(){
-	const webhook = new Webhook({'scope':'messages'});
+	const webhook = new Webhook({scope:'messages'});
 	return new Controller({ 
 		resource : webhook,
 		viewModel: function(messages){
