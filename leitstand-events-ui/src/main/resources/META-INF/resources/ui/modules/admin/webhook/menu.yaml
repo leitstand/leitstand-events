@@ -1,0 +1,50 @@
+name: webhooks
+provider: rtbrick.com
+controller: controller.js
+description: Webhook administration UI component
+# Add link-state graph menu item to pod menu.
+extensions:
+- extend:
+    module: admin
+    menu: main
+  items:
+  - item: webhooks
+    label: Webhooks
+    title: Manage webhooks to subscribe for Leitstand events.
+    scopesAllowed:
+    - adm
+    - adm.read
+    - adm.webhook
+    - adm.webhook.read
+    view: webhooks.html   
+- extend:
+    module: admin
+  menus: 
+  - menu: webhook
+    label: "{{hook_name}} webhook"
+    scopesAllowed:
+    - adm
+    - adm.read
+    - adm.webhook
+    - adm.webhook.read
+    requires:
+    - hook_id
+    query:
+      hook: "{{&hook_id}}"
+    items:
+    - item: settings
+      label: Settings
+      title: Manage webhook settings
+      view: webhook.html
+    - item: template
+      label: Template
+      title: Manage webhook template
+      view: webhook-template.html
+    - item: history
+      label: Message Queue
+      title: Browse webhool message queue
+      view: message-queue.html  
+    - item: statistics
+      label: Statistics
+      title: View message processing statistics
+      view: webhook-statistics.html
