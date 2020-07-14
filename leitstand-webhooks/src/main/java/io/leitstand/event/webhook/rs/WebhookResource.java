@@ -70,21 +70,21 @@ public class WebhookResource {
 	private Messages messages;
 	
 	@GET
-	@Path("/{hook_id:"+UUID_PATTERN+"}")
+	@Path("/{hook_id:"+UUID_PATTERN+"}/settings")
 	@Scopes({ADM,ADM_READ, ADM_WEBHOOKS_READ, ADM_WEBHOOKS})
 	public WebhookSettings getWebhookSettings(@PathParam("hook_id") WebhookId hookId) {
 		return service.getWebhook(hookId);
 	}
 	
 	@GET
-	@Path("/{hook_name}")
+	@Path("/{hook_name}/settings")
 	@Scopes({ADM,ADM_READ, ADM_WEBHOOKS_READ, ADM_WEBHOOKS})
 	public WebhookSettings getWebhookSettings(@Valid @PathParam("hook_name") WebhookName hookName) {
 		return service.getWebhook(hookName);
 	}
 	
 	@PUT
-	@Path("/{hook_id:"+UUID_PATTERN+"}")
+	@Path("/{hook_id:"+UUID_PATTERN+"}/settings")
 	public Response storeWebhookSettings(@Valid @PathParam("hook_id") WebhookId hookId,
 										 @Valid WebhookSettings settings) {
 		if(isDifferent(hookId, settings.getWebhookId())) {
@@ -99,6 +99,16 @@ public class WebhookResource {
 		}
 		return success(messages);
 	}
+	
+	@PUT
+    @Path("/{hook_name}/settings")
+    public Response storeWebhookSettings(@Valid @PathParam("hook_name") WebhookName hookName,
+                                         @Valid WebhookSettings settings) {
+        if(service.storeWebhook(settings)) {
+            return created(messages, settings.getWebhookId());
+        }
+        return success(messages);
+    }
 	
 	@POST
 	public Response storeWebhookSettings(@Valid WebhookSettings settings) {

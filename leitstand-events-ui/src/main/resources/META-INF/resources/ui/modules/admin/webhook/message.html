@@ -17,7 +17,8 @@
 <ui-breadcrumbs>
 	<ui-breadcrumb href="webhooks.html">Webhooks</ui-breadcrumb>
 	<ui-breadcrumb href="webhook.html?hook={{hook_id}}">{{hook_name}}</ui-breadcrumb>
-	<ui-breadcrumb>Message History</ui-breadcrumb>
+	<ui-breadcrumb href="message-queue.html?hook={{hook_id}}">Message Queue</ui-breadcrumb>
+	<ui-breadcrumb>{{event.event_id}}</ui-breadcrumb>
 </ui-breadcrumbs>
 <ui-title>Message History</ui-title>
 <ui-subtitle>Review the message history of all processed messages and optionally reset the webhook to a previous message.</ui-subtitle>
@@ -54,7 +55,6 @@
 <ui-form scopesAllowed="adm adm.webhook">
 <ui-actions>
 	<ui-button danger name="reset" title="Reset webhook to this message in order to process the message and all subsequent messages again">Reset webhook</ui-button>
-	<ui-button name="retry" title="Reset message to process the message again">Reset message</ui-button>
 </ui-actions>
 </ui-form>
 <!-- {{/event}} -->

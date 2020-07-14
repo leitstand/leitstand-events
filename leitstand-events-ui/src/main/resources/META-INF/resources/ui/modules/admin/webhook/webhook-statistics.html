@@ -39,11 +39,19 @@
 	<tbody>
 		<tr>
 			<td><span class="PROCESSED">PROCESSED</span></td>
+			<!-- {{#statistics.PROCESSED.message_count}} -->
 			<td>{{statistics.PROCESSED.message_count}}{{^statistics.PROCESSED.message_count}}0{{/statistics.PROCESSED.message_count}}</td>
 			<td>{{statistics.PROCESSED.min_exec_time}} ms</td>
 			<td>{{statistics.PROCESSED.avg_exec_time}} ms</td>
 			<td>{{statistics.PROCESSED.max_exec_time}} ms</td>
-			<td>{{statistics.PROCESSED.stddev_exec_time}} ms</td>			
+			<td>{{statistics.PROCESSED.stddev_exec_time}} ms</td>	
+			<!-- {{/statistics.PROCESSED.message_count}} -->
+		    <!-- {{^statistics.PROCESSED.message_count}} -->
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>  
+            <!-- {{/statistics.PROCESSED.message_count}} -->	
 		</tr>
 		<tr>
 			<td><span class="FAILED">FAILED</span></td>
@@ -72,7 +80,7 @@
 		</tr>
 		<tr>
 			<td><span class="READY">READY</span></td>
-			<td>{{statistics.READY.message_count}}{{^statistics.IN_PROGRESS.message_count}}0{{/statistics.IN_PROGRESS.message_count}}</td>
+			<td>{{statistics.READY.message_count}}{{^statistics.READY.message_count}}0{{/statistics.READY.message_count}}</td>
 			<td>-</td>
 			<td>-</td>
 			<td>-</td>

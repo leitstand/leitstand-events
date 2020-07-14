@@ -155,6 +155,8 @@ public class WebhookEventLoop implements Runnable, StartupListener, ShutdownList
 										  permits.availablePermits()));
 					// Restore interrupt status and keep message loop alive.
 					currentThread().interrupt();
+				} finally {
+				    permits.release();
 				}
 			}
 		}

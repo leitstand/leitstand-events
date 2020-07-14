@@ -16,6 +16,7 @@
 package io.leitstand.event.webhook.model;
 
 import static io.leitstand.commons.model.StringUtil.isEmptyString;
+import static io.leitstand.event.queue.service.DomainEventId.domainEventId;
 import static io.leitstand.event.webhook.service.MessageState.READY;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.TemporalType.TIMESTAMP;
@@ -53,9 +54,9 @@ import io.leitstand.event.webhook.service.MessageState;
 @NamedQuery(name="Webhook_Message.findMessagesInState",
 			query="SELECT m FROM Webhook_Message m JOIN FETCH m.message WHERE m.webhook=:webhook AND m.state=:state ORDER BY m.webhook.id, m.message.id DESC")
 @NamedQuery(name="Webhook_Message.findMessagesByCorrelationId",
-			query="SELECT m FROM Webhook_Message m JOIN FETCH m.message WHERE m.webhook=:webhook AND m.message.correlationId=:correlationId ORDER BY m.webhook.id, m.message.id DESC")
+			query="SELECT m FROM Webhook_Message m JOIN FETCH m.message WHERE m.webhook=:webhook AND (m.message.correlationId=:correlationId OR m.message.uuid=:eventId) ORDER BY m.webhook.id, m.message.id DESC")
 @NamedQuery(name="Webhook_Message.findMessagesInStateByCorrelationId",
-			query="SELECT m FROM Webhook_Message m JOIN FETCH m.message WHERE m.webhook=:webhook AND m.message.correlationId=:correlationId  AND m.state=:state ORDER BY m.webhook.id, m.message.id DESC")
+			query="SELECT m FROM Webhook_Message m JOIN FETCH m.message WHERE m.webhook=:webhook AND (m.message.correlationId=:correlationId OR m.message.uuid=:eventId)  AND m.state=:state ORDER BY m.webhook.id, m.message.id DESC")
 @NamedQuery(name="Webhook_Message.resetFailedCalls",
 			query="UPDATE Webhook_Message m SET m.state=io.leitstand.event.webhook.service.MessageState.READY,m.execTime=NULL,m.httpStatus=NULL WHERE m.webhook=:webhook AND m.state=io.leitstand.event.webhook.service.MessageState.FAILED")
 @NamedQuery(name="Webhook_Message.resetWebhook",
@@ -99,6 +100,7 @@ public class Webhook_Message {
 			return em -> em.createNamedQuery("Webhook_Message.findMessagesByCorrelationId",Webhook_Message.class)
 						   .setParameter("webhook", webhook)
 						   .setParameter("correlationId", correlationId)
+						   .setParameter("eventId",domainEventId(correlationId))
 						   .getResultList();		
 			
 		}
@@ -116,6 +118,7 @@ public class Webhook_Message {
 				   	   .setParameter("webhook", webhook)
 				   	   .setParameter("state", state)
 				   	   .setParameter("correlationId",correlationId)
+                       .setParameter("eventId",domainEventId(correlationId))
 				   	   .setFirstResult(offset)
 				   	   .setMaxResults(limit)
 				   	   .getResultList();

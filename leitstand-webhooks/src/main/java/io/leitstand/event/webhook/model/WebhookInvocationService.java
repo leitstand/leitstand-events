@@ -102,11 +102,11 @@ public class WebhookInvocationService {
 																			   "IN (SELECT message_id "+ 
 																			   	   "FROM  bus.webhook_message "+ 
 																			   	   "WHERE webhook_id = ? "+
-																			   	   "AND state ='PENDING' "+
+																			   	   "AND state ='READY' "+
 																			   	   "FOR UPDATE SKIP LOCKED "+
 																			   	   "LIMIT ?) "+
 																			   "RETURNING message_id) "+
-																		  "SELECT m.id, m.uuid, m.name, m.correlationid, m.message "+
+																		  "SELECT m.id, m.uuid, m.name, m.correlationid, m.message, m.tscreated "+
 																		  "FROM bus.message m "+
 																		  "WHERE m.id "+
 																		  "IN (SELECT message_id "+ 
@@ -114,14 +114,14 @@ public class WebhookInvocationService {
 																		  webhook.getId(),
 																		  webhook.getBatchSize()),
 																  rs -> {
-																	JsonObject jsonPayload =  parseJson(rs.getString(4));
+																	JsonObject jsonPayload =  parseJson(rs.getString(5));
 																	JsonObject requestEntity = createNullSafeJsonObjectBuilder()
 																					   		   .add("event_id",rs.getString(2))
 																					   		   .add("event_name",rs.getString(3))
 																					   		   .add("correlation_id",rs.getString(4))
 																					   		   .add("message",jsonPayload)
 																					   		   .add("topic_name", webhook.getTopicName().toString())
-																					   		   .add("date_created",isoDateFormat(rs.getTimestamp(5)))
+																					   		   .add("date_created",isoDateFormat(rs.getTimestamp(6)))
 																					   		   .build();	
 		
 																	return newWebhookInvocation()
@@ -228,7 +228,7 @@ public class WebhookInvocationService {
 	public void populateWebhookQueues() {
 		// Write all messages that occurred since the last execution to the webhook queues.
 		int messages = db.executeUpdate(prepare("INSERT INTO bus.webhook_message (webhook_id, message_id, state) "+
-												"SELECT w.id, m.id, 'NEW' "+
+												"SELECT w.id, m.id, 'READY' "+
 												"FROM bus.message m "+
 												"JOIN bus.webhook w "+
 												"ON m.topic_id = w.topic_id "+

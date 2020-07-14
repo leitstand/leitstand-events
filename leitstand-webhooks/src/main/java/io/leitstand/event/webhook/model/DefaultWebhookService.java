@@ -199,6 +199,8 @@ public class DefaultWebhookService implements WebhookService{
 				  			  WHK0001I_WEBHOOK_STORED.getReasonCode(),
 				  			  settings.getWebhookName()));
 
+		messages.add(createMessage(WHK0001I_WEBHOOK_STORED, settings.getWebhookName()));
+		
 		return hook.getId() == null;
 	}
 
