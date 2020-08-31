@@ -6,50 +6,16 @@ plugins {
 def allTestCoverageFile = "$buildDir/jacoco/allTestCoverage.exec"
 allprojects {
 
-    task version(type: Exec) {
-        def version = findProperty('versions.leitstand-events')         
-        println 'Project version ('+project.name+'): ' + version
-        project.setVersion(version)
-    }
     group = 'io.leitstand.events'
     // Activate jacoco for all modules to measure unit test code coverage
     apply plugin: 'jacoco'
     apply plugin: 'java'
     apply plugin: 'maven-publish'
-
-    repositories {
-        maven {
-            name = "Github"
-            url = "https://maven.pkg.github.com/leitstand/artifacts"
-            credentials {
-                username = findProperty("github.download.username")
-                password = findProperty("github.download.token")
-            }
-        }
-        jcenter()
-        mavenLocal()
-    }
-    publishing {
-        repositories {
-            mavenLocal()
-            if (project.hasProperty('github')) {
-                maven {
-                    name = "Github"
-                    url = uri("https://maven.pkg.github.com/leitstand/artifacts")
-                    credentials {
-                        username = findProperty("github.upload.username")
-                        password = findProperty("github.upload.token")
-                    }
-                }
-            }
-        }
-    }
 }
 
 jacoco {
   toolVersion='0.8.4'
 }
-
 
 task jacocoMerge(type: JacocoMerge){
    destinationFile = file(allTestCoverageFile)
@@ -69,6 +35,24 @@ project(':leitstand-events-ui') {
 }
 
 subprojects {
+    
+    task version(type: Exec) {
+        def version = findProperty('versions.leitstand-events')         
+        println 'Project version ('+project.name+'): ' + version
+        project.setVersion(version)
+    }
+
+    repositories {
+        jcenter()
+        mavenLocal()
+    }
+    
+    publishing {
+        repositories {
+            mavenLocal()
+        }
+    }
+
     sonarqube {
         properties {
             property 'sonar.sources', 'src/main/java'
