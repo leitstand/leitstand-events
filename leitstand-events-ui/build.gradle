@@ -3,30 +3,26 @@ plugins {
     id 'eclipse-wtp'
 }
 
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
-    archiveClassifier = 'sources'
-}
-
 dependencies {
-	compile 'io.leitstand:leitstand-commons:0.0.+'
-	compile 'io.leitstand.ui:leitstand-ui-model:0.0.+'
-	compileOnly 'javax:javaee-api:8.0'
+    implementation 'io.leitstand:leitstand-commons:'+findProperty('versions.leitstand-commons')
+    implementation 'io.leitstand.ui:leitstand-ui-model:'+findProperty('versions.leitstand-ui')
+    compileOnly 'javax:javaee-api:8.0'
 
-  	testCompile 'junit:junit:4.12'
-	testCompile 'javax:javaee-api:8.0'
-	testCompile 'org.mockito:mockito-all:1.8.4'
-	testCompile 'io.leitstand:leitstand-test:0.0.+'
-	testCompile 'io.leitstand.inventory:leitstand-inventory-model:0.0.+'
-	testCompile 'org.hibernate:hibernate-validator:4.2.0.Final'
-	testCompile 'org.eclipse.persistence:eclipselink:2.7.1'
-    testCompile 'javax.xml.bind:jaxb-api:2.3.0'
-    testCompile 'org.glassfish.jersey.core:jersey-client:2.6'
-    testCompile 'com.h2database:h2:1.4.200'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'io.leitstand:leitstand-test:'+findProperty('versions.leitstand-commons')
+    testImplementation 'org.mockito:mockito-all:1.8.4'
+    testImplementation 'com.h2database:h2:1.4.200'
+    testRuntimeOnly 'org.hibernate:hibernate-validator:4.2.0.Final'
+    testRuntimeOnly 'org.eclipse.persistence:eclipselink:2.7.1'
+    testRuntimeOnly 'javax.xml.bind:jaxb-api:2.3.0'
+    testRuntimeOnly 'org.glassfish.jersey.core:jersey-client:2.6'
 
 }   
 
-
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
 
 publishing {
     publications {
@@ -34,8 +30,6 @@ publishing {
             artifactId = 'leitstand-events-ui'
             version = project.getVersion()
             from components.java
-            artifact sourcesJar
-
         }
     }
 }
