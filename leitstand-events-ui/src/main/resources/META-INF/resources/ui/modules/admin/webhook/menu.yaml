@@ -21,7 +21,8 @@ extensions:
     module: admin
   menus: 
   - menu: webhook
-    label: "{{hook_name}} webhook"
+    label: Webhook
+    entity: "{{hook_name}}"
     scopesAllowed:
     - adm
     - adm.read
