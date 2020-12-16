@@ -13,11 +13,5 @@
 		<class>io.leitstand.event.queue.jpa.TopicNameConverter</class>
 		<class>io.leitstand.commons.jpa.BooleanConverter</class>
 		<shared-cache-mode>NONE</shared-cache-mode>
-		<properties>
-			<property name="eclipselink.logging.logger" value="JavaLogger"/>
-			<property name="eclipselink.logging.level" value="FINE"/>
-			<property name="eclipselink.logging.level.sql" value="ALL"/>
-			<property name="eclipselink.logging.parameters" value="true"/>
-		</properties>
 	</persistence-unit>
 </persistence>
