@@ -18,6 +18,7 @@ package io.leitstand.event.queue.jpa;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.event.queue.service.DomainEventName;
 
 @Converter
@@ -25,7 +26,7 @@ public class DomainEventNameConverter implements AttributeConverter<DomainEventN
 
 	@Override
 	public String convertToDatabaseColumn(DomainEventName attribute) {
-		return DomainEventName.toString(attribute);
+		return Scalar.toString(attribute);
 	}
 
 	@Override

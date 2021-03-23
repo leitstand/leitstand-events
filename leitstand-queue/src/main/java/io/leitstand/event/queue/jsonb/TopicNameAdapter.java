@@ -17,13 +17,14 @@ package io.leitstand.event.queue.jsonb;
 
 import javax.json.bind.adapter.JsonbAdapter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.event.queue.service.TopicName;
 
 public class TopicNameAdapter implements JsonbAdapter<TopicName, String> {
 
 	@Override
 	public String adaptToJson(TopicName obj) {
-		return TopicName.toString(obj);
+		return Scalar.toString(obj);
 	}
 
 	@Override
