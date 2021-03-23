@@ -18,12 +18,16 @@ package io.leitstand.event.webhook.model;
 import static io.leitstand.commons.etc.Environment.emptyEnvironment;
 import static io.leitstand.commons.template.TemplateService.newTemplateService;
 import static io.leitstand.event.queue.model.Topic.findTopicByName;
+import static io.leitstand.event.queue.service.TopicName.topicName;
+import static io.leitstand.event.webhook.service.Endpoint.endpoint;
 import static io.leitstand.event.webhook.service.ReasonCode.WHK0002E_WEBHOOK_NOT_FOUND;
 import static io.leitstand.event.webhook.service.ReasonCode.WHK0003I_WEBHOOK_REMOVED;
 import static io.leitstand.event.webhook.service.WebhookId.randomWebhookId;
+import static io.leitstand.event.webhook.service.WebhookName.webhookName;
 import static io.leitstand.event.webhook.service.WebhookSettings.newWebhookSettings;
 import static io.leitstand.event.webhook.service.WebhookSettings.HttpMethod.POST;
 import static io.leitstand.event.webhook.service.WebhookTemplate.newWebhookTemplate;
+import static io.leitstand.testing.ut.LeitstandCoreMatchers.reason;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -36,7 +40,9 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import javax.persistence.EntityManager;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 
 import io.leitstand.commons.EntityNotFoundException;
@@ -47,16 +53,29 @@ import io.leitstand.event.queue.model.Topic;
 import io.leitstand.event.queue.model.TopicProvider;
 import io.leitstand.event.queue.service.TopicName;
 import io.leitstand.event.webhook.service.Endpoint;
+import io.leitstand.event.webhook.service.WebhookId;
 import io.leitstand.event.webhook.service.WebhookName;
 import io.leitstand.event.webhook.service.WebhookService;
 import io.leitstand.event.webhook.service.WebhookSettings;
 import io.leitstand.event.webhook.service.WebhookTemplate;
 import io.leitstand.security.crypto.MasterSecret;
+import io.leitstand.testing.ut.LeitstandCoreMatchers;
 
 public class WebhookServiceIT extends WebhookIT{
 
-	private static final TopicName TOPIC = TopicName.valueOf("WebhookServiceIT");
+    private static final WebhookId   WEBHOOK_ID   = randomWebhookId();
+    private static final WebhookName WEBHOOK_NAME = webhookName("webhook");
+    private static final TopicName   TOPIC_NAME   = topicName("topic");
+    private static final String      ACCESSKEY    = "accesskey";
+    private static final String      DESCRIPTION  = "description";
+    private static final Endpoint    ENDPOINT     = endpoint("http://localhost:8080");
+    private static final String      USER_NAME    = "user";
+    private static final String      PASSWORD     = "password";
+    private static final String      SELECTOR     = "selector";
 	
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+    
 	private WebhookService service;
 	private Messages messages;
 	private ArgumentCaptor<Message> messagesCaptor;
@@ -72,8 +91,8 @@ public class WebhookServiceIT extends WebhookIT{
 		master.init();
 		
 		transaction(() -> {
-			repository.addIfAbsent(findTopicByName(TOPIC), 
-								   () -> new Topic(TOPIC));
+			repository.addIfAbsent(findTopicByName(TOPIC_NAME), 
+								   () -> new Topic(TOPIC_NAME));
 			
 		});
 		
@@ -91,38 +110,34 @@ public class WebhookServiceIT extends WebhookIT{
 	
 	@Test
 	public void raise_exception_when_webhook_does_not_exist() {
-		try {
-			service.getWebhookTemplate(randomWebhookId());
-		} catch (EntityNotFoundException e) {
-			assertEquals(WHK0002E_WEBHOOK_NOT_FOUND, e.getReason());
-		}
+	    exception.expect(EntityNotFoundException.class);
+	    exception.expect(reason(WHK0002E_WEBHOOK_NOT_FOUND));
+		service.getWebhookTemplate(WEBHOOK_ID);
 	}
 	
 	
 	@Test
 	public void raise_exception_when_webhook_name_does_not_exist() {
-		try {
-			service.getWebhookTemplate(WebhookName.valueOf("non-existent"));
-		} catch (EntityNotFoundException e) {
-			assertEquals(WHK0002E_WEBHOOK_NOT_FOUND, e.getReason());
-		}
+        exception.expect(EntityNotFoundException.class);
+        exception.expect(reason(WHK0002E_WEBHOOK_NOT_FOUND));
+        service.getWebhookTemplate(WEBHOOK_NAME);
 	}
 	
 	@Test
 	public void create_new_webhook() {
 		WebhookSettings settings = newWebhookSettings()
-								   .withWebhookId(randomWebhookId())
-								   .withWebhookName(WebhookName.valueOf("create_new_webhook"))
-								   .withAccesskey("ACCESSKEY")
+								   .withWebhookId(WEBHOOK_ID)
+								   .withWebhookName(WEBHOOK_NAME)
+								   .withAccesskey(ACCESSKEY)
 								   .withBatchSize(10)
-								   .withDescription("Unit test webhook")
+								   .withDescription(DESCRIPTION)
 								   .withEnabled(true)
-								   .withEndpoint(Endpoint.valueOf("http://leitstand.io"))
+								   .withEndpoint(ENDPOINT)
 								   .withMethod(POST)
-								   .withUserId("unitest")
-								   .withPassword("password")
-								   .withSelector(".*")
-								   .withTopicName(TOPIC)
+								   .withUserId(USER_NAME)
+								   .withPassword(PASSWORD)
+								   .withSelector(SELECTOR)
+								   .withTopicName(TOPIC_NAME)
 								   .build();
 		
 		transaction(()->{
@@ -130,7 +145,7 @@ public class WebhookServiceIT extends WebhookIT{
 		});
 		
 		transaction(()->{
-			assertEquals(settings,service.getWebhook(settings.getWebhookId()));
+			assertEquals(settings,service.getWebhook(WEBHOOK_ID));
 		});
 		
 		
@@ -139,18 +154,18 @@ public class WebhookServiceIT extends WebhookIT{
 	@Test
 	public void remove_existing_webhook_by_id() {
 		WebhookSettings settings = newWebhookSettings()
-				   				   .withWebhookId(randomWebhookId())
-				   				   .withWebhookName(WebhookName.valueOf("remove_existing_webhook"))
-				   				   .withAccesskey("ACCESSKEY")
+				   				   .withWebhookId(WEBHOOK_ID)
+				   				   .withWebhookName(WEBHOOK_NAME)
+				   				   .withAccesskey(ACCESSKEY)
 				   				   .withBatchSize(10)
-				   				   .withDescription("Unit test webhook")
+				   				   .withDescription(DESCRIPTION)
 				   				   .withEnabled(true)
-				   				   .withEndpoint(Endpoint.valueOf("http://leitstand.io"))
+				   				   .withEndpoint(ENDPOINT)
 				   				   .withMethod(POST)
-				   				   .withUserId("unitest")
-				   				   .withPassword("password")
-				   				   .withSelector(".*")
-				   				   .withTopicName(TOPIC)
+				   				   .withUserId(USER_NAME)
+				   				   .withPassword(PASSWORD)
+				   				   .withSelector(SELECTOR)
+				   				   .withTopicName(TOPIC_NAME)
 				   				   .build();
 
 		transaction(()->{
@@ -158,7 +173,7 @@ public class WebhookServiceIT extends WebhookIT{
 		});
 		doNothing().when(messages).add(messagesCaptor.capture());
 		transaction(()->{
-			service.removeWebhook(settings.getWebhookId());
+			service.removeWebhook(WEBHOOK_ID);
 		});
 	
 		Message message = messagesCaptor.getValue();
@@ -169,18 +184,18 @@ public class WebhookServiceIT extends WebhookIT{
 	@Test
 	public void remove_existing_webhook_by_name() {
 		WebhookSettings settings = newWebhookSettings()
-				   				   .withWebhookId(randomWebhookId())
-				   				   .withWebhookName(WebhookName.valueOf("remove_existing_webhook"))
-				   				   .withAccesskey("ACCESSKEY")
+				   				   .withWebhookId(WEBHOOK_ID)
+				   				   .withWebhookName(WEBHOOK_NAME)
+				   				   .withAccesskey(ACCESSKEY)
 				   				   .withBatchSize(10)
-				   				   .withDescription("Unit test webhook")
+				   				   .withDescription(DESCRIPTION)
 				   				   .withEnabled(true)
-				   				   .withEndpoint(Endpoint.valueOf("http://leitstand.io"))
+				   				   .withEndpoint(ENDPOINT)
 				   				   .withMethod(POST)
-				   				   .withUserId("unitest")
-				   				   .withPassword("password")
-				   				   .withSelector(".*")
-				   				   .withTopicName(TOPIC)
+				   				   .withUserId(USER_NAME)
+				   				   .withPassword(PASSWORD)
+				   				   .withSelector(SELECTOR)
+				   				   .withTopicName(TOPIC_NAME)
 				   				   .build();
 
 		transaction(()->{
@@ -188,7 +203,7 @@ public class WebhookServiceIT extends WebhookIT{
 		});
 		doNothing().when(messages).add(messagesCaptor.capture());
 		transaction(()->{
-			service.removeWebhook(settings.getWebhookName());
+			service.removeWebhook(WEBHOOK_NAME);
 		});
 	
 		Message message = messagesCaptor.getValue();
@@ -196,50 +211,80 @@ public class WebhookServiceIT extends WebhookIT{
 	}
 	
 	@Test
-	public void remove_nonexisting_webhook_does_not_raise_an_error() {
-		service.removeWebhook(randomWebhookId());
+	public void remove_nonexisting_webhook_by_id_does_not_raise_an_error() {
+		service.removeWebhook(WEBHOOK_ID);
 		verifyZeroInteractions(messages);
 	}
+
+	   @Test
+	    public void remove_nonexisting_webhook_by_name_does_not_raise_an_error() {
+	        service.removeWebhook(WEBHOOK_NAME);
+	        verifyZeroInteractions(messages);
+	    }
 	
 	@Test
 	public void rename_existing_webhook() {
 		WebhookSettings settings = newWebhookSettings()
-								   .withWebhookId(randomWebhookId())
-								   .withWebhookName(WebhookName.valueOf("rename_existing_webhook"))
-								   .withAccesskey("ACCESSKEY")
+								   .withWebhookId(WEBHOOK_ID)
+								   .withWebhookName(WEBHOOK_NAME)
+								   .withAccesskey(ACCESSKEY)
 								   .withBatchSize(10)
-								   .withDescription("Unit test webhook")
+								   .withDescription(DESCRIPTION)
 								   .withEnabled(true)
-								   .withEndpoint(Endpoint.valueOf("http://leitstand.io"))
+								   .withEndpoint(ENDPOINT)
 								   .withMethod(POST)
-								   .withUserId("unitest")
-								   .withPassword("password")
-								   .withSelector(".*")
-								   .withTopicName(TOPIC)
+								   .withUserId(USER_NAME)
+								   .withPassword(PASSWORD)
+								   .withSelector(SELECTOR)
+								   .withTopicName(TOPIC_NAME)
 								   .build();
 
-		transaction(()->{
+		transaction(() -> {
 			service.storeWebhook(settings);
+		});
+		
+		WebhookName renamed = webhookName("renamed");
+
+		transaction(() -> {
+		    WebhookSettings upgrade = newWebhookSettings()
+                                      .withWebhookId(WEBHOOK_ID)
+                                      .withWebhookName(renamed)
+                                      .withAccesskey(ACCESSKEY)
+                                      .withBatchSize(10)
+                                      .withDescription(DESCRIPTION)
+                                      .withEnabled(true)
+                                      .withEndpoint(ENDPOINT)
+                                      .withMethod(POST)
+                                      .withUserId(USER_NAME)
+                                      .withPassword(PASSWORD)
+                                      .withSelector(SELECTOR)
+                                      .withTopicName(TOPIC_NAME)
+                                      .build();
+		    
+		   service.storeWebhook(upgrade); 
+		});
+		
+		transaction(() -> {
+		   assertEquals(renamed, service.getWebhook(WEBHOOK_ID)
+		                                .getWebhookName()); 
 		});
 		
 	}
 	
 	@Test
 	public void attempt_to_set_template_for_nonexistent_template_raises_exception() {
+	    exception.expect(EntityNotFoundException.class);
+	    exception.expect(reason(WHK0002E_WEBHOOK_NOT_FOUND));
+	    
 		WebhookTemplate template = newWebhookTemplate()
-								   .withWebhookId(randomWebhookId())
-								   .withWebhookName(WebhookName.valueOf("non-existent"))
+								   .withWebhookId(WEBHOOK_ID)
+								   .withWebhookName(WEBHOOK_NAME)
 								   .withContentType("application/json")
 								   .withTemplate("Hello {{world}}!")
 								   .build();
 		
 		transaction(()->{
-			try {
-				service.storeWebhookTemplate(template);
-				fail("EntityNotFoundException expected!");
-			} catch (EntityNotFoundException e) {
-				assertEquals(WHK0002E_WEBHOOK_NOT_FOUND,e.getReason());
-			}
+			service.storeWebhookTemplate(template);
 		});
 		
 	}
@@ -247,17 +292,17 @@ public class WebhookServiceIT extends WebhookIT{
 	@Test
 	public void remove_template_of_existing_webhook_by_id() {
 		WebhookSettings settings = newWebhookSettings()
-				   				   .withWebhookId(randomWebhookId())
-				   				   .withWebhookName(WebhookName.valueOf("remove_template_of_existing_webhook_by_id"))
+				   				   .withWebhookId(WEBHOOK_ID)
+				   				   .withWebhookName(WEBHOOK_NAME)
 				   				   .withEnabled(true)
-				   				   .withEndpoint(Endpoint.valueOf("http://leitstand.io"))
+				   				   .withEndpoint(ENDPOINT)
 				   				   .withMethod(POST)
-								   .withTopicName(TOPIC)
+								   .withTopicName(TOPIC_NAME)
 				   				   .build();
 		
 		WebhookTemplate template = newWebhookTemplate()
-				   				   .withWebhookId(settings.getWebhookId())
-				   				   .withWebhookName(settings.getWebhookName())
+				   				   .withWebhookId(WEBHOOK_ID)
+				   				   .withWebhookName(WEBHOOK_NAME)
 				   				   .withTemplate("test")
 				   				   .build();
 
@@ -267,13 +312,13 @@ public class WebhookServiceIT extends WebhookIT{
 		});
 		
 		transaction(()->{
-			assertEquals("test",service.getWebhookTemplate(settings.getWebhookId()).getTemplate());
-			service.removeWebhookTemplate(settings.getWebhookId());
+			assertEquals("test",service.getWebhookTemplate(WEBHOOK_ID).getTemplate());
+			service.removeWebhookTemplate(WEBHOOK_ID);
 		});
 		
 		transaction(()->{
-			assertNull(service.getWebhookTemplate(settings.getWebhookId()).getTemplate());
-			service.removeWebhookTemplate(settings.getWebhookId());
+			assertNull(service.getWebhookTemplate(WEBHOOK_ID).getTemplate());
+			service.removeWebhookTemplate(WEBHOOK_ID);
 		});
 
 	}
@@ -281,17 +326,17 @@ public class WebhookServiceIT extends WebhookIT{
 	@Test
 	public void remove_template_of_existing_webhook_by_name() {
 		WebhookSettings settings = newWebhookSettings()
-				   				   .withWebhookId(randomWebhookId())
-				   				   .withWebhookName(WebhookName.valueOf("remove_template_of_existing_webhook_by_name"))
+				   				   .withWebhookId(WEBHOOK_ID)
+				   				   .withWebhookName(WEBHOOK_NAME)
 				   				   .withEnabled(true)
-				   				   .withEndpoint(Endpoint.valueOf("http://leitstand.io"))
+				   				   .withEndpoint(ENDPOINT)
 				   				   .withMethod(POST)
-								   .withTopicName(TOPIC)
+								   .withTopicName(TOPIC_NAME)
 				   				   .build();
 		
 		WebhookTemplate template = newWebhookTemplate()
-				   				   .withWebhookId(settings.getWebhookId())
-				   				   .withWebhookName(settings.getWebhookName())
+				   				   .withWebhookId(WEBHOOK_ID)
+				   				   .withWebhookName(WEBHOOK_NAME)
 				   				   .withTemplate("test")
 				   				   .build();
 
@@ -301,13 +346,13 @@ public class WebhookServiceIT extends WebhookIT{
 		});
 		
 		transaction(()->{
-			assertEquals("test",service.getWebhookTemplate(settings.getWebhookName()).getTemplate());
-			service.removeWebhookTemplate(settings.getWebhookName());
+			assertEquals("test",service.getWebhookTemplate(WEBHOOK_NAME).getTemplate());
+			service.removeWebhookTemplate(WEBHOOK_NAME);
 		});
 		
 		transaction(()->{
-			assertNull(service.getWebhookTemplate(settings.getWebhookName()).getTemplate());
-			service.removeWebhookTemplate(settings.getWebhookName());
+			assertNull(service.getWebhookTemplate(WEBHOOK_NAME).getTemplate());
+			service.removeWebhookTemplate(WEBHOOK_NAME);
 		});
 
 	}
@@ -315,18 +360,18 @@ public class WebhookServiceIT extends WebhookIT{
 	@Test
 	public void enable_disabled_webhook() {
 		WebhookSettings settings = newWebhookSettings()
-								   .withWebhookId(randomWebhookId())
-								   .withWebhookName(WebhookName.valueOf("enable_disabled_webhook"))
-								   .withAccesskey("ACCESSKEY")
+								   .withWebhookId(WEBHOOK_ID)
+								   .withWebhookName(WEBHOOK_NAME)
+								   .withAccesskey(ACCESSKEY)
 								   .withBatchSize(10)
-								   .withDescription("Unit test webhook")
+								   .withDescription(DESCRIPTION)
 								   .withEnabled(false)
-								   .withEndpoint(Endpoint.valueOf("http://leitstand.io"))
+								   .withEndpoint(ENDPOINT)
 								   .withMethod(POST)
-								   .withUserId("unitest")
-								   .withPassword("password")
-								   .withSelector(".*")
-								   .withTopicName(TOPIC)
+								   .withUserId(USER_NAME)
+								   .withPassword(PASSWORD)
+								   .withSelector(SELECTOR)
+								   .withTopicName(TOPIC_NAME)
 								   .build();
 		
 		transaction(()->{
@@ -334,12 +379,12 @@ public class WebhookServiceIT extends WebhookIT{
 		});
 
 		transaction(()->{
- 			assertFalse(service.getWebhook(settings.getWebhookId()).isEnabled());
-			service.enableWebhook(settings.getWebhookId());
+ 			assertFalse(service.getWebhook(WEBHOOK_ID).isEnabled());
+			service.enableWebhook(WEBHOOK_ID);
 		});
 		
 		transaction(()->{
-			assertTrue(service.getWebhook(settings.getWebhookId()).isEnabled());
+			assertTrue(service.getWebhook(WEBHOOK_ID).isEnabled());
 		});
 		
 	}
@@ -347,11 +392,11 @@ public class WebhookServiceIT extends WebhookIT{
 	@Test
 	public void disable_enabled_webhook() {
 		WebhookSettings settings = newWebhookSettings()
-								   .withWebhookId(randomWebhookId())
-								   .withWebhookName(WebhookName.valueOf("disable_enabled_webhook"))
-								   .withEndpoint(Endpoint.valueOf("http://leitstand.io"))
+								   .withWebhookId(WEBHOOK_ID)
+								   .withWebhookName(WEBHOOK_NAME)
+								   .withEndpoint(ENDPOINT)
 								   .withMethod(POST)
-								   .withTopicName(TOPIC)
+								   .withTopicName(TOPIC_NAME)
 								   .build();
 				
 		transaction(()->{
@@ -359,12 +404,12 @@ public class WebhookServiceIT extends WebhookIT{
 		});
 		
 		transaction(()->{
-			assertTrue(service.getWebhook(settings.getWebhookId()).isEnabled());
-			service.disableWebhook(settings.getWebhookId());
+			assertTrue(service.getWebhook(WEBHOOK_ID).isEnabled());
+			service.disableWebhook(WEBHOOK_ID);
 		});
 		
 		transaction(()->{
-			assertFalse(service.getWebhook(settings.getWebhookId()).isEnabled());
+			assertFalse(service.getWebhook(WEBHOOK_ID).isEnabled());
 		});
 	}
 
