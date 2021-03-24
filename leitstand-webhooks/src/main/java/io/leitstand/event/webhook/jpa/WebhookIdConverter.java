@@ -18,6 +18,7 @@ package io.leitstand.event.webhook.jpa;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.event.webhook.service.WebhookId;
 
 @Converter
@@ -25,7 +26,7 @@ public class WebhookIdConverter implements AttributeConverter<WebhookId, String>
 
 	@Override
 	public String convertToDatabaseColumn(WebhookId attribute) {
-		return WebhookId.toString(attribute);
+		return Scalar.toString(attribute);
 	}
 
 	@Override

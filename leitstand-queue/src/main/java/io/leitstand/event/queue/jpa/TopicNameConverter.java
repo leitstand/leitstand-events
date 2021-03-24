@@ -18,6 +18,7 @@ package io.leitstand.event.queue.jpa;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.event.queue.service.TopicName;
 
 @Converter
@@ -25,7 +26,7 @@ public class TopicNameConverter implements AttributeConverter<TopicName,String> 
 
 	@Override
 	public String convertToDatabaseColumn(TopicName attribute) {
-		return TopicName.toString(attribute);
+		return Scalar.toString(attribute);
 	}
 
 	@Override

@@ -17,13 +17,14 @@ package io.leitstand.event.webhook.jsonb;
 
 import javax.json.bind.adapter.JsonbAdapter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.event.webhook.service.Endpoint;
 
 public class EndpointAdapter implements JsonbAdapter<Endpoint, String>{
 
 	@Override
 	public String adaptToJson(Endpoint obj) {
-		return Endpoint.toString(obj);
+		return Scalar.toString(obj);
 	}
 
 	@Override

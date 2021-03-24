@@ -15,6 +15,8 @@
  */
 package io.leitstand.event.webhook.model;
 
+import static io.leitstand.commons.db.DatabaseService.prepare;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.sql.Connection;
@@ -22,6 +24,8 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.sql.DataSource;
+
+import org.junit.After;
 
 import io.leitstand.testing.it.JpaIT;
 
@@ -41,11 +45,19 @@ public class WebhookIT extends JpaIT{
 	@Override
 	protected void initDatabase(DataSource ds) throws SQLException {
 		try(Connection c = ds.getConnection()){
-			c.createStatement().execute("CREATE SCHEMA HOOK");
 			c.createStatement().execute("CREATE SCHEMA BUS");
 			c.createStatement().execute("CREATE SCHEMA LEITSTAND");
 		}
 	}
+	
+	@After
+	public void clearDatabase() {
+	    transaction(() -> {
+	        getDatabase().executeUpdate(prepare("DELETE FROM BUS.WEBHOOK"));
+	        getDatabase().executeUpdate(prepare("DELETE FROM BUS.TOPIC"));
+	    });
+	}
+	
 
 	@Override
 	protected String getPersistenceUnitName() {
