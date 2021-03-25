@@ -106,9 +106,6 @@ public class Webhook extends AbstractEntity{
 	@Max(value=10, message="{batch_size.out_of_range}")
 	private int batchSize;
 	
-	private String contentType;
-	private String template;
-
 	@ManyToOne
 	@JoinColumn(name="topic_id", referencedColumnName="id")
 	private Topic topic;
@@ -125,8 +122,6 @@ public class Webhook extends AbstractEntity{
 		this.topic = topic;	
 		this.enabled = true;
 		this.batchSize = DEFAULT_BATCH_SIZE;
-		// Default content type is application/json unless specified otherwise by a template definition.
-		this.contentType = "application/json";
 	}
 	
 	
@@ -206,22 +201,6 @@ public class Webhook extends AbstractEntity{
 		return getTopic().getName();
 	}
 	
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
-	
-	public String getContentType() {
-		return contentType;
-	}
-	
-	public String getTemplate() {
-		return template;
-	}
-	
-	public void setTemplate(String template) {
-		this.template = template;
-	}
-	
 	public String getSelector() {
 		return selector;
 	}
@@ -252,10 +231,6 @@ public class Webhook extends AbstractEntity{
 
 	public void enable() {
 		this.enabled = true;
-	}
-
-	public boolean hasTemplate() {
-		return isNonEmptyString(getTemplate());
 	}
 
 }

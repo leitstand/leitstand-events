@@ -157,7 +157,6 @@ public class WebhookQueueIT extends WebhookIT{
 											mock(Messages.class), 
 											master,
 											new WebhookProvider(repository),
-											new WebhookRewritingService(newTemplateService()),
 											new WebhookStatisticsService(getDatabase()));
 		
 		

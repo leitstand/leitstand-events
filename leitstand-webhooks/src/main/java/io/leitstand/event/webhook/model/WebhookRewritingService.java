@@ -37,15 +37,6 @@ public class WebhookRewritingService {
 		this.templates = templates;
 	}
 	
-	public String rewritePayload(Webhook webhook, JsonObject payload) {
-		String templateDefinition = webhook.getTemplate();
-		if(isEmptyString(templateDefinition)) {
-			return payload.toString();
-		}
-		Template<String> template = templates.compileTemplate(templateDefinition, plain());
-		return template.apply(unmarshal(payload).toMap());
-	}
-	
 	public Endpoint rewriteEndpoint(Webhook webhook, JsonObject payload) {
 		Endpoint endpoint = webhook.getEndpoint();
 		Template<String> template = templates.compileTemplate(endpoint.getValue(), plain());

@@ -43,8 +43,8 @@ import static io.leitstand.event.webhook.service.WebhookMessage.newWebhookMessag
 import static io.leitstand.event.webhook.service.WebhookMessages.newWebhookMessages;
 import static io.leitstand.event.webhook.service.WebhookReference.newWebhookRef;
 import static io.leitstand.event.webhook.service.WebhookSettings.newWebhookSettings;
-import static io.leitstand.event.webhook.service.WebhookTemplate.newWebhookTemplate;
 import static java.lang.String.format;
+import static java.util.logging.Logger.getLogger;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
@@ -71,13 +71,12 @@ import io.leitstand.event.webhook.service.WebhookReference;
 import io.leitstand.event.webhook.service.WebhookService;
 import io.leitstand.event.webhook.service.WebhookSettings;
 import io.leitstand.event.webhook.service.WebhookStatistics;
-import io.leitstand.event.webhook.service.WebhookTemplate;
 import io.leitstand.security.crypto.MasterSecret;
 
 @Service
 public class DefaultWebhookService implements WebhookService{
 	
-	private static final Logger LOG = Logger.getLogger(DefaultWebhookService.class.getName());
+	private static final Logger LOG = getLogger(DefaultWebhookService.class.getName());
 	
 	@Inject
 	@Webhooks
@@ -96,9 +95,6 @@ public class DefaultWebhookService implements WebhookService{
 	private TopicProvider topics;
 	
 	@Inject
-	private WebhookRewritingService rewriter;
-	
-	@Inject
 	private WebhookStatisticsService statistics;
 	
 	public DefaultWebhookService() {
@@ -110,14 +106,12 @@ public class DefaultWebhookService implements WebhookService{
 								 Messages messages,
 								 MasterSecret secret,
 								 WebhookProvider webhooks,
-								 WebhookRewritingService rewriter,
 								 WebhookStatisticsService statistics) {
 		this.repository = repository;
 		this.topics	    = topics;
 		this.messages	= messages;
 		this.secret		= secret;
 		this.webhooks   = webhooks;
-		this.rewriter 	= rewriter;
 		this.statistics = statistics;
 	}
 	
@@ -324,8 +318,7 @@ public class DefaultWebhookService implements WebhookService{
 					      .withPayload(jsonPayload)
 					      .withDateCreated(message.getDateCreated())
 					      .build())
-			   .withContentType(webhook.getContentType())
-			   .withMessage(rewriter.rewritePayload(webhook, requestEntity))
+			   .withMessage(requestEntity)
 			   .withMessageState(webhookMessage.getMessageState())
 			   .withExecutionTime(webhookMessage.getExecutionTime())
 			   .withHttpStatus(webhookMessage.getHttpStatus())
@@ -386,43 +379,6 @@ public class DefaultWebhookService implements WebhookService{
 
 	/** {@inheritDoc */
 	@Override
-	public void storeWebhookTemplate(WebhookTemplate template) {
-		Webhook webhook = webhooks.fetchWebhook(template.getWebhookId());
-		webhook.setContentType(template.getContentType());
-		webhook.setTemplate(template.getTemplate());
-	}
-	
-	/** {@inheritDoc */
-	@Override
-	public void removeWebhookTemplate(WebhookId hookId) {
-		Webhook webhook = webhooks.fetchWebhook(hookId);
-		removeWebhookTemplate(webhook);
-	}
-
-	/** {@inheritDoc */
-	@Override
-	public void removeWebhookTemplate(WebhookName hookName) {
-		Webhook webhook = webhooks.fetchWebhook(hookName);
-		removeWebhookTemplate(webhook);
-	}
-	
-	private void removeWebhookTemplate(Webhook webhook) {
-		if(isEmptyString(webhook.getTemplate())) {
-			return;
-		}
-		webhook.setContentType("application/json");
-		webhook.setTemplate(null);
-		LOG.info(()->format("%s: Removed template for webhook %s (%s)",
-						    WHK0001I_WEBHOOK_STORED,
-						    webhook.getWebhookName(),
-						    webhook.getWebhookId()));
-		messages.add(createMessage(WHK0001I_WEBHOOK_STORED,
-								   webhook.getWebhookId(),
-								   webhook.getWebhookName()));
-	}
-	
-	/** {@inheritDoc */
-	@Override
 	public void enableWebhook(WebhookId hookId) {
 		Webhook webhook = webhooks.fetchWebhook(hookId);
 		enableWebhook(webhook);
@@ -470,32 +426,6 @@ public class DefaultWebhookService implements WebhookService{
 		messages.add(createMessage(WHK0007I_WEBHOOK_DISABLED, 
 								   webhook.getWebhookId(),
 								   webhook.getWebhookName()));
-	}
-
-	/** {@inheritDoc */
-	@Override
-	public WebhookTemplate getWebhookTemplate(WebhookId hookId) {
-		Webhook webhook = webhooks.fetchWebhook(hookId);
-		return webhookTemplate(webhook);
-	}
-
-	/** {@inheritDoc */
-	@Override
-	public WebhookTemplate getWebhookTemplate(WebhookName hookName) {
-		Webhook webhook = webhooks.fetchWebhook(hookName);
-		return webhookTemplate(webhook);
-	}
-	
-	private WebhookTemplate webhookTemplate(Webhook webhook) {
-		return newWebhookTemplate()
-			   .withWebhookId(webhook.getWebhookId())
-			   .withWebhookName(webhook.getWebhookName())
-			   .withDescription(webhook.getDescription())
-			   .withTopicName(webhook.getTopicName())
-			   .withSelector(webhook.getSelector())
-			   .withContentType(webhook.getContentType())
-			   .withTemplate(webhook.getTemplate())
-			   .build();
 	}
 
 	@Override

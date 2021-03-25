@@ -17,7 +17,6 @@ package io.leitstand.event.webhook.service;
 
 import java.util.List;
 
-import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.event.queue.service.DomainEventId;
 
 /**
@@ -43,7 +42,6 @@ import io.leitstand.event.queue.service.DomainEventId;
  * @see WebhookId
  * @see WebhookName
  * @see WebhookSettings
- * @see WebhookTemplate 
  */
 public interface WebhookService {
 
@@ -114,21 +112,6 @@ public interface WebhookService {
 	 */
 	WebhookSettings getWebhook(WebhookName hookName);
 	
-	
-	/**
-	 * Returns the webhook template.
-	 * @param hookId the webhook ID
-	 * @return the webhook template.
-	 */
-	WebhookTemplate getWebhookTemplate(WebhookId hookId);
-	
-	/**
-	 * Returns the webhook template.
-	 * @param hookName the webhook name
-	 * @return the webhook template.
-	 */
-	WebhookTemplate getWebhookTemplate(WebhookName hookName);
-	
 	/**
 	 * Removes a webhook. 
 	 * Fails silently if the webhook does not exist.
@@ -142,20 +125,6 @@ public interface WebhookService {
 	 * @param hookName the webhook name.
 	 */
 	void removeWebhook(WebhookName hookName);
-	
-	/**
-	 * Removes a webhook template.
-	 * @param hookId the webhook ID
-	 * @throws EntitNotFoundException if the webhook does not exist
-	 */
-	void removeWebhookTemplate(WebhookId hookId);
-
-	/**
-	 * Removes a webhook template.
-	 * @param hookId the webhook ID
-	 * @throws EntitNotFoundException if the webhook does not exist
-	 */
-	void removeWebhookTemplate(WebhookName hookName);
 	
 	/**
 	 * Resets a webhook to process a domain event and all events occurred after that event again.
@@ -193,13 +162,6 @@ public interface WebhookService {
 	 */
 	boolean storeWebhook(WebhookSettings settings);
 	
-	/**
-	 * Updates a webhook template.
-	 * @param template the webhook template
-	 * @throws EntityNotFoundException if the webhook does not exist
-	 */
-	void storeWebhookTemplate(WebhookTemplate template);
-
 	WebhookStatistics getWebhookStatistics(WebhookId hookId);
 	WebhookStatistics getWebhookStatistics(WebhookName hookName);
 	WebhookMessages findMessages(WebhookId hookId, MessageFilter filter);
