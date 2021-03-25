@@ -184,33 +184,6 @@ const webhookController = function(){
 	});
 }
 	
-const webhookTemplateController = function(){
-	const hook = new Webhook({scope:'template'});
-		return new Controller({
-			resource:hook,
-			buttons:{
-				'save-template':function(){
-					const settings = this.updateViewModel({'content_type':this.input('content_type').value(),
-													 	   'template':this.input('template').value()})
-					hook.saveSettings(this.location.params,
-									  settings);
-					
-				},
-				'remove-template':function(){
-					this.input('content_type').value('application/json');
-					this.input('template').value('');
-					this.updateViewModel({'content_type':'application/json',
-										  'template':null});
-					hook.saveSettings(this.location.params,
-							  settings);
-				},
-			},
-			onSuccess:function(){
-				this.navigate('webhooks.html');
-			}
-		});
-}
-
 const webhookMessageQueueController = function(){
 	const webhook = new Webhook({scope:'messages'});
 	return new Controller({ 
@@ -310,5 +283,4 @@ const webhookView = {
 export const menu = new Menu({'webhooks.html':webhooksView,
 							  'webhook.html':webhookView,
 							  'webhook-statistics.html':webhookStatisticsController(),
-							  'webhook-template.html':webhookTemplateController(),
 							  'message-queue.html':messageQueueView});
