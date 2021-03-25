@@ -28,9 +28,9 @@
 		<table class="list">
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>State</th>
-					<th>Topic</th>
+					<th class="text">Name</th>
+					<th class="check">State</th>
+					<th class="text">Topic</th>
 					<th class="text">Message Selector</th>
 					<th class="text">Description</th>
 				</tr>
@@ -38,9 +38,9 @@
 			<tbody>
 			<!-- {{#hooks}} -->
 				<tr>
-					<td><a href="webhook.html?hook={{hook_id}}" title="View hook settings">{{hook_name}}</a></td>
+					<td class="text"><a href="webhook.html?hook={{hook_id}}" title="View hook settings">{{hook_name}}</a></td>
 					<td><span class="{{state}}">{{state}}</span></td>
-					<td>{{topic_name}}</td>
+					<td class="text">{{topic_name}}</td>
 					<td class="text">{{selector}}</td>
 					<td class="text">{{description}}</td>
 				</tr>	
