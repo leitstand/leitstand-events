@@ -44,17 +44,6 @@ public class WebhookMessage extends WebhookReference{
 		}
 		
 		/**
-		 * Sets the message content type.
-		 * @param contentType content type in MIME format (e.g. <code>application/json</code>)
-		 * @return a reference to this builder to continue with object creation
-		 */
-		public Builder withContentType(String contentType) {
-			assertNotInvalidated(getClass(), object);
-			object.contentType = contentType;
-			return this;
-		}
-		
-		/**
 		 * Sets the domain event.
 		 * @param event the original domain event
 		 * @return a reference to this builder to continue with object creation
@@ -70,7 +59,7 @@ public class WebhookMessage extends WebhookReference{
 		 * @param message the message text
 		 * @return a reference to this builder to continue with object creation
 		 */
-		public Builder withMessage(String message) {
+		public Builder withMessage(JsonObject message) {
 			assertNotInvalidated(getClass(), object);
 			object.message = message;
 			return this;
@@ -98,29 +87,20 @@ public class WebhookMessage extends WebhookReference{
 		
 	}
 	
-	private String message;
+	private JsonObject message;
 	private DomainEvent<JsonObject> event;
-	private String contentType;
 	private MessageState messageState;
 	private Integer httpStatus;
 	private Long executionTime;
 	
 	/**
-	 * Returns the message text.
-	 * @return the message text.
+	 * Returns the request entity.
+	 * @return the request entity.
 	 */
-	public String getMessage() {
+	public JsonObject getMessage() {
 		return message;
 	}
 	
-	/**
-	 * Returns the message content type in MIME format.
-	 * @return the message content type in MIME format.
-	 */
-	public String getContentType() {
-		return contentType;
-	}
-
 	/**
 	 * Returns the original domain event.
 	 * @return the original domain event.

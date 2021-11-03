@@ -16,7 +16,6 @@
 package io.leitstand.event.webhook.model;
 
 import static io.leitstand.commons.json.MapUnmarshaller.unmarshal;
-import static io.leitstand.commons.model.StringUtil.isEmptyString;
 import static io.leitstand.commons.template.TemplateProcessor.plain;
 
 import javax.enterprise.context.Dependent;
@@ -35,15 +34,6 @@ public class WebhookRewritingService {
 	@Inject
 	public WebhookRewritingService(TemplateService templates) {
 		this.templates = templates;
-	}
-	
-	public String rewritePayload(Webhook webhook, JsonObject payload) {
-		String templateDefinition = webhook.getTemplate();
-		if(isEmptyString(templateDefinition)) {
-			return payload.toString();
-		}
-		Template<String> template = templates.compileTemplate(templateDefinition, plain());
-		return template.apply(unmarshal(payload).toMap());
 	}
 	
 	public Endpoint rewriteEndpoint(Webhook webhook, JsonObject payload) {

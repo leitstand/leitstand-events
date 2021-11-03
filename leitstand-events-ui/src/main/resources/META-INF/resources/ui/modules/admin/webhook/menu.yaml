@@ -37,10 +37,6 @@ extensions:
       label: Settings
       title: Manage webhook settings
       view: webhook.html
-    - item: template
-      label: Template
-      title: Manage webhook template
-      view: webhook-template.html
     - item: history
       label: Message Queue
       title: Browse webhool message queue

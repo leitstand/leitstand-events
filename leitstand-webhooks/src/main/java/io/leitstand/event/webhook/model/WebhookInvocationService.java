@@ -33,6 +33,7 @@ import static io.leitstand.event.webhook.service.MessageState.PROCESSED;
 import static io.leitstand.security.auth.UserName.userName;
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -129,8 +130,8 @@ public class WebhookInvocationService {
 																		   .withDomainEventId(domainEventId(rs.getString(2)))
 																		   .withDomainEventName(domainEventName(rs.getString(3)))
 																		   .withMessagePK(rs.getLong(1))
-																		   .withContentType(webhook.getContentType())
-																		   .withMessage(rewriter.rewritePayload(webhook, requestEntity))
+																		   .withContentType(APPLICATION_JSON)
+																		   .withMessage(requestEntity.toString())
 																		   .build();
 															
 														});

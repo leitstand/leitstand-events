@@ -53,7 +53,6 @@ import io.leitstand.event.webhook.service.WebhookName;
 import io.leitstand.event.webhook.service.WebhookService;
 import io.leitstand.event.webhook.service.WebhookSettings;
 import io.leitstand.event.webhook.service.WebhookStatistics;
-import io.leitstand.event.webhook.service.WebhookTemplate;
 import io.leitstand.security.auth.Scopes;
 
 @Resource
@@ -264,54 +263,7 @@ public class WebhookResource {
 		service.removeWebhook(hookName);
 		return success(messages);
 	}
-	
-	
-	@PUT
-	@Path("/{hook_id:"+UUID_PATTERN+"}/template")
-	public Response storeWebhookTemplate(@Valid @PathParam("hook_id") WebhookId hookId,
-										 @Valid WebhookTemplate settings) {
-		if(isDifferent(hookId, settings.getWebhookId())) {
-			throw new UnprocessableEntityException(VAL0003E_IMMUTABLE_ATTRIBUTE, 
-					   								"hook_id", 
-					   								hookId, 
-					   								settings.getWebhookId());
-		}
 		
-		service.storeWebhookTemplate(settings);
-		return success(messages);
-	}
-	
-	@PUT
-	@Path("/{hook_name}/template")
-	public Response storeWebhookTemplate(@Valid @PathParam("hook_name") WebhookName hookName,
-										 @Valid WebhookTemplate settings) {
-		
-		if(isDifferent(hookName, settings.getWebhookName())) {
-			throw new UnprocessableEntityException(VAL0003E_IMMUTABLE_ATTRIBUTE, 
-					   								"hook_name", 
-					   								hookName, 
-					   								settings.getWebhookName());
-		}
-		
-		service.storeWebhookTemplate(settings);
-		return success(messages);
-		
-	}
-	
-	@GET
-	@Path("/{hook_id:"+UUID_PATTERN+"}/template")
-	@Scopes({ADM,ADM_READ, ADM_WEBHOOKS_READ, ADM_WEBHOOKS})
-	public WebhookTemplate getWebhookTemplate(@PathParam("hook_id") WebhookId hookId) {
-		return service.getWebhookTemplate(hookId);
-	}
-	
-	@GET
-	@Path("/{hook_name}/template")
-	@Scopes({ADM,ADM_READ, ADM_WEBHOOKS_READ, ADM_WEBHOOKS})
-	public WebhookTemplate getWebhookTemplate(@Valid @PathParam("hook_name") WebhookName hookName) {
-		return service.getWebhookTemplate(hookName);
-	}
-	
 	@GET
 	@Path("/{hook_id:"+UUID_PATTERN+"}/statistics")
 	@Scopes({ADM,ADM_READ, ADM_WEBHOOKS_READ, ADM_WEBHOOKS})

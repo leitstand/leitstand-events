@@ -19,7 +19,6 @@ import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.event.webhook.service.WebhookId.randomWebhookId;
 import static io.leitstand.event.webhook.service.WebhookName.webhookName;
 import static io.leitstand.event.webhook.service.WebhookSettings.newWebhookSettings;
-import static io.leitstand.event.webhook.service.WebhookTemplate.newWebhookTemplate;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.reason;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -40,7 +39,6 @@ import io.leitstand.event.webhook.service.WebhookId;
 import io.leitstand.event.webhook.service.WebhookName;
 import io.leitstand.event.webhook.service.WebhookService;
 import io.leitstand.event.webhook.service.WebhookSettings;
-import io.leitstand.event.webhook.service.WebhookTemplate;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WebhookResourceTest {
@@ -124,33 +122,6 @@ public class WebhookResourceTest {
 								   .build();
 
 		resource.storeWebhookSettings(randomWebhookId(), settings);
-	}
-
-	@Test
-	public void throw_UnprocessableEntityException_when_webhook_id_conflicts_when_putting_a_webhook_template() {
-		exception.expect(UnprocessableEntityException.class);
-		exception.expect(reason(VAL0003E_IMMUTABLE_ATTRIBUTE));
-		
-		WebhookTemplate settings = newWebhookTemplate()
-								   .withWebhookId(WEBHOOK_ID)
-								   .withWebhookName(WEBHOOK_NAME)
-								   .build();
-
-		resource.storeWebhookTemplate(randomWebhookId(), settings);
-		
-	}
-	
-	
-	@Test
-	public void send_success_response_when_putting_a_webhook_template() {
-		
-		WebhookTemplate settings = newWebhookTemplate()
-								   .withWebhookId(WEBHOOK_ID)
-								   .withWebhookName(WEBHOOK_NAME)
-								   .build();
-
-		Response response = resource.storeWebhookTemplate(WEBHOOK_ID, settings);
-		assertEquals(200,response.getStatus());
 	}
 	
 }
