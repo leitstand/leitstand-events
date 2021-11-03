@@ -42,7 +42,6 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import javax.security.enterprise.credential.Password;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.StatusType;
 
 import io.leitstand.commons.db.DatabaseService;

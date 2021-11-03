@@ -16,7 +16,6 @@
 package io.leitstand.event.webhook.model;
 
 import static io.leitstand.commons.json.MapUnmarshaller.unmarshal;
-import static io.leitstand.commons.model.StringUtil.isEmptyString;
 import static io.leitstand.commons.template.TemplateProcessor.plain;
 
 import javax.enterprise.context.Dependent;

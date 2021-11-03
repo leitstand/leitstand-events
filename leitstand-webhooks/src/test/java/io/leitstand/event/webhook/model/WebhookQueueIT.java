@@ -17,7 +17,6 @@ package io.leitstand.event.webhook.model;
 
 import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.commons.etc.Environment.emptyEnvironment;
-import static io.leitstand.commons.template.TemplateService.newTemplateService;
 import static io.leitstand.event.queue.model.Topic.findTopicByName;
 import static io.leitstand.event.queue.service.DomainEvent.newDomainEvent;
 import static io.leitstand.event.queue.service.DomainEventId.randomDomainEventId;
