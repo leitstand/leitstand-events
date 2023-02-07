@@ -13,7 +13,7 @@ dependencies {
     testImplementation 'io.leitstand:leitstand-test:' + findProperty("versions.leitstand-commons")
     testImplementation 'org.mockito:mockito-all:1.10.9'
     testImplementation 'com.h2database:h2:1.4.200'
-    testRuntimeOnly 'org.eclipse.persistence:eclipselink:2.7.1'
+    testRuntimeOnly 'org.eclipse.persistence:eclipselink:2.7.10'
     testRuntimeOnly 'javax.xml.bind:jaxb-api:2.3.0'
     testRuntimeOnly 'org.eclipse:yasson:1.0.3'
     testRuntimeOnly 'org.glassfish:javax.json:1.1.4'
